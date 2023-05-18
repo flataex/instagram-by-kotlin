@@ -1,0 +1,31 @@
+services:
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - '9092:9092'
+    links:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - '2181:2181'
+
+  mysql:
+    image: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: instagram
+      MYSQL_USER: malllag
+      MYSQL_PASSWORD: 1234
