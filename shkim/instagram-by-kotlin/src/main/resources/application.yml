@@ -7,7 +7,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/instagram?serverTimezone=Asia/Seoul
-    username: shkim
+    username: root
     password: 1234
   jpa:
     hibernate:
