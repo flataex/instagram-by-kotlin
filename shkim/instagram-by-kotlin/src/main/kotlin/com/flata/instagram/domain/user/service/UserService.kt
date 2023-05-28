@@ -15,7 +15,9 @@ class UserService(
     private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
 
-    fun save(request: UserSaveRequest): Long {
+    fun save(
+        request: UserSaveRequest
+    ): Long {
         return request.validateEmail()
             .validateNickname()
             .createUser()
