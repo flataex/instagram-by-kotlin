@@ -10,7 +10,7 @@ class File(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long,
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "feed_id", nullable = false)
