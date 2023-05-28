@@ -47,6 +47,7 @@ class UserService(
         return userRepository.save(this)
     }
 
+    @Transactional(readOnly = true)
     fun login(
         request: UserLoginRequest
     ): Long = userRepository.findByEmail(request.email)?.run {
