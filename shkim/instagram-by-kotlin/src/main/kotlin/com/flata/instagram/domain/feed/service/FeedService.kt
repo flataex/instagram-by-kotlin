@@ -32,24 +32,37 @@ class FeedService(
     fun findAll(
         userId: Long
     ): List<FeedResponse> = feedRepository.findByUserId(userId)
-            .map { feed ->
-                FeedResponse(
-                    content = feed.content,
-                    createdAt = feed.createdAt,
-                    files = fileRepository.findByFeedId(feed.id)
-                        .map { FileResponse(it.url) }
-                )
-            }
+        .map { feed ->
+            FeedResponse(
+                content = feed.content,
+                createdAt = feed.createdAt,
+                files = fileRepository.findByFeedId(feed.id)
+                    .map { FileResponse(it.url) }
+            )
+        }
+
+    @Transactional(readOnly = true)
+    fun findById(
+        feedId: Long
+    ): FeedResponse = feedRepository.findByIdOrNull(feedId)
+        ?.let { feed ->
+            FeedResponse(
+                content = feed.content,
+                createdAt = feed.createdAt,
+                files = fileRepository.findByFeedId(feed.id)
+                    .map { FileResponse(it.url) }
+            )
+        } ?: error("존재하지 않는 피드입니다.")
 
     fun save(
         userId: Long,
         request: FeedSaveRequest
     ): Long = userRepository.findByIdOrNull(userId)
-            ?.let { user ->
-                saveFeed(user, request)
-                    .also { saveImage(it, request) }
-                    .id
-            } ?: error("존재하지 않는 계정입니다.")
+        ?.let { user ->
+            saveFeed(user, request)
+                .also { saveImage(it, request) }
+                .id
+        } ?: error("존재하지 않는 계정입니다.")
 
     private fun saveFeed(
         user: User,
