@@ -21,6 +21,13 @@ class FeedController(
         return ResponseEntity(feedService.findAll(userId2), HttpStatus.OK)
     }
 
+    @GetMapping("/{id}")
+    fun findById(
+        @PathVariable(value = "id") feedId: Long
+    ): ResponseEntity<FeedResponse> {
+        return ResponseEntity(feedService.findById(feedId), HttpStatus.OK)
+    }
+
     @PostMapping
     fun save(
         @RequestHeader(value = "Authorization") userId: String,
