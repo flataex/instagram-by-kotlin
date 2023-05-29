@@ -12,7 +12,7 @@ class File(
     @Column(name = "id")
     var id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id", nullable = false)
     var feed: Feed,
 
