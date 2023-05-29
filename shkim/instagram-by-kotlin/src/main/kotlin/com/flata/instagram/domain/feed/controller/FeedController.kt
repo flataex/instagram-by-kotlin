@@ -3,6 +3,7 @@ package com.flata.instagram.domain.feed.controller
 import com.flata.instagram.domain.feed.controller.dto.FeedResponse
 import com.flata.instagram.domain.feed.controller.dto.FeedSaveRequest
 import com.flata.instagram.domain.feed.service.FeedService
+import com.flata.instagram.global.model.LoginUser
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,10 +16,9 @@ class FeedController(
 
     @GetMapping
     fun findAll(
-        @RequestHeader(value = "Authorization") userId: String,
+        @LoginUser userId: Long,
     ): ResponseEntity<List<FeedResponse>> {
-        val userId2 = userId.split(" ")[1].toLong()
-        return ResponseEntity(feedService.findAll(userId2), HttpStatus.OK)
+        return ResponseEntity(feedService.findAll(userId), HttpStatus.OK)
     }
 
     @GetMapping("/{id}")
@@ -30,10 +30,9 @@ class FeedController(
 
     @PostMapping
     fun save(
-        @RequestHeader(value = "Authorization") userId: String,
+        @LoginUser userId: Long,
         @ModelAttribute request: FeedSaveRequest
     ): ResponseEntity<Long> {
-        val userId2 = userId.split(" ")[1].toLong()
-        return ResponseEntity(feedService.save(userId2, request), HttpStatus.CREATED)
+        return ResponseEntity(feedService.save(userId, request), HttpStatus.CREATED)
     }
 }
