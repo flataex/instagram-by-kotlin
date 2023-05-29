@@ -15,3 +15,6 @@ spring:
     show-sql: true
     generate-ddl: true
     open-in-view: false
+
+file:
+  path: /Users/shark/Documents/GitHub/instagram-by-kotlin/shkim/instagram-by-kotlin/src/main/resources/image/
