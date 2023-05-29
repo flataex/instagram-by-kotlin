@@ -25,6 +25,56 @@ internal class FeedServiceTest {
     lateinit var feedRepository: FeedRepository
 
     @Test
+    fun `피드 리스트 조회`() {
+        // given
+        val savedUserId = userService.save(
+            UserSaveRequest(
+                email = "shkim@flataex.com",
+                password = "1234",
+                nickname = "뚱이"
+            )
+        )
+
+        val feedSaveRequest = FeedSaveRequest(
+            "테스트",
+            emptyList()
+        )
+
+        feedService.save(savedUserId, feedSaveRequest)
+
+        // when
+        val feedResponses = feedService.findAll(savedUserId)
+
+        // then
+        assertEquals(feedSaveRequest.content, feedResponses.get(0).content)
+    }
+
+    @Test
+    fun `피드 단건 조회`() {
+        // given
+        val savedUserId = userService.save(
+            UserSaveRequest(
+                email = "shkim@flataex.com",
+                password = "1234",
+                nickname = "뚱이"
+            )
+        )
+
+        val feedSaveRequest = FeedSaveRequest(
+            "테스트",
+            emptyList()
+        )
+
+        val savedFeedId = feedService.save(savedUserId, feedSaveRequest)
+
+        // when
+        val feedResponse = feedService.findById(savedFeedId)
+
+        // then
+        assertEquals(feedSaveRequest.content, feedResponse.content)
+    }
+
+    @Test
     fun `피드 등록`() {
         // given
         val savedUserId = userService.save(
