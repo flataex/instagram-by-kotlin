@@ -33,3 +33,7 @@ logging:
         type:
           descriptor:
             sql: trace
+
+file:
+  root:
+    path: /Users/baekgyu/IdeaProjects/git-instagram-by-kotlin/bghan/instagram-by-kotlin/src/main/resources/files
