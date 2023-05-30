@@ -30,13 +30,13 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun signIn(request: SignInRequest): SignInResponse =
-        getUserBy(request.email)?.let { validateSignIn(request, it) }
+        getUserBy(request.email)?.let { takeIfValidSignIn(request, it) }
             ?: throw WrongEmailException()
 
     private fun getUserBy(email: String): User? =
         userRepository.findByEmail(email)
 
-    private fun validateSignIn(request: SignInRequest, user: User): SignInResponse =
+    private fun takeIfValidSignIn(request: SignInRequest, user: User): SignInResponse =
         user.toSignInResponse().takeIf { bCryptPasswordEncoder.matches(request.password, user.password) }
             ?: throw WrongPasswordException()
 
