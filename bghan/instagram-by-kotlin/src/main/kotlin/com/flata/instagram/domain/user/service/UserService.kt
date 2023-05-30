@@ -7,6 +7,7 @@ import com.flata.instagram.domain.user.converter.toSignInResponse
 import com.flata.instagram.domain.user.converter.toUser
 import com.flata.instagram.domain.user.model.User
 import com.flata.instagram.domain.user.repository.UserRepository
+import com.flata.instagram.global.exception.user.UserNotFoundException
 import com.flata.instagram.global.exception.user.WrongEmailException
 import com.flata.instagram.global.exception.user.WrongPasswordException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -46,4 +47,8 @@ class UserService(
     @Transactional(readOnly = true)
     fun existsByNickname(nickname: String): Boolean =
         userRepository.existsByNickname(nickname)
+
+    @Transactional(readOnly = true)
+    fun getUserBy(userId: Long): User =
+        userRepository.findById(userId).orElseThrow { UserNotFoundException() }
 }
