@@ -10,9 +10,15 @@ enum class ExceptionType(
     // 사용자
     WRONG_EMAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "존재하는 이메일이 없습니다."),
     WRONG_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
+    USER_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "사용자를 조회할 수 없습니다."),
+
+    // 게시글
+    FEED_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시글을 조회할 수 없습니다."),
+    NOT_FEED_OWNER_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시글을 작성한 사용자가 아니라 삭제할 수 없습니다."),
 
     // Client
     BAD_REQUEST_BODY(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
+    ILLEGAL_HTTP_METHOD(HttpStatus.BAD_REQUEST, "허용되지 않은 HTTP Method입니다."),
 
     // DB
     DUPLICATE_KEY_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 저장된 데이터가 존재합니다."),

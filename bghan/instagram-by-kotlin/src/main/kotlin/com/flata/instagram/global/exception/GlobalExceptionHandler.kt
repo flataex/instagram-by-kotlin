@@ -9,10 +9,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.sql.SQLIntegrityConstraintViolationException
+import javax.validation.ConstraintViolationException
 
 @RestControllerAdvice
 class GlobalExceptionHandler(
@@ -36,6 +38,18 @@ class GlobalExceptionHandler(
     fun httpMessageNotReadableException(exception: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
         log.error(exceptionConverter.convertStackTraceAsStringFrom(exception))
         return ExceptionType.BAD_REQUEST_BODY.toResponseEntity()
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    fun httpRequestMethodNotSupportedException(exception: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse> {
+        log.error(exceptionConverter.convertStackTraceAsStringFrom(exception))
+        return ExceptionType.ILLEGAL_HTTP_METHOD.toResponseEntity()
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun constraintViolationException(exception: ConstraintViolationException): ResponseEntity<ErrorResponse> {
+        log.error(exceptionConverter.convertStackTraceAsStringFrom(exception))
+        return exception.toResponseEntity()
     }
 
     @ExceptionHandler(ApplicationException::class)
