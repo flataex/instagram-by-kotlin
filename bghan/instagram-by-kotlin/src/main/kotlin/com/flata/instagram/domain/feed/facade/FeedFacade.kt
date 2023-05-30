@@ -1,6 +1,6 @@
 package com.flata.instagram.domain.feed.facade
 
-import com.flata.instagram.domain.converter.toDTOWith
+import com.flata.instagram.domain.feed.converter.toDTOWith
 import com.flata.instagram.domain.feed.controller.dto.FeedDeletionRequest
 import com.flata.instagram.domain.feed.controller.dto.FeedResponse
 import com.flata.instagram.domain.feed.controller.dto.FeedSaveRequest

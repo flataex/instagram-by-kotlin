@@ -1,4 +1,4 @@
-package com.flata.instagram.domain.converter
+package com.flata.instagram.domain.feed.converter
 
 import com.flata.instagram.domain.feed.controller.dto.FeedResponse
 import com.flata.instagram.domain.feed.model.Feed
