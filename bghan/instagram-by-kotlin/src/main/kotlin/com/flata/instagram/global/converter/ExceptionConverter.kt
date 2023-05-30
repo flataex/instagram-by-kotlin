@@ -2,11 +2,13 @@ package com.flata.instagram.global.converter
 
 import com.flata.instagram.global.exception.ApplicationException
 import com.flata.instagram.global.model.ErrorResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.MethodArgumentNotValidException
 import java.io.PrintWriter
 import java.io.StringWriter
+import javax.validation.ConstraintViolationException
 
 @Component
 class ExceptionConverter(
@@ -30,4 +32,9 @@ private fun MethodArgumentNotValidException.convertsToValidationMessage(): Error
 fun ApplicationException.toResponseEntity(): ResponseEntity<ErrorResponse> = ResponseEntity(
     ErrorResponse(this.message.orEmpty()),
     this.httpStatus
+)
+
+fun ConstraintViolationException.toResponseEntity(): ResponseEntity<ErrorResponse> = ResponseEntity(
+    ErrorResponse(this.message.orEmpty()),
+    HttpStatus.BAD_REQUEST
 )
