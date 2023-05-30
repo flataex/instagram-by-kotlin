@@ -22,4 +22,6 @@ class Feed(
 
     @Column(name = "content", nullable = false, columnDefinition = "text")
     var content: String
-): BaseEntity()
+): BaseEntity() {
+    fun isOwner(userId: Long): Boolean = this.user.isSame(userId)
+}

@@ -25,4 +25,6 @@ class User(
 
     @Column(name = "nickname", nullable = false, length = 16, unique = true)
     var nickname: String
-): BaseEntity()
+): BaseEntity() {
+    fun isSame(userId: Long): Boolean = this.id.compareTo(userId) == 0
+}
