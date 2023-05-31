@@ -7,7 +7,6 @@ import com.flata.instagram.domain.file.repository.FileRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 
@@ -41,13 +40,14 @@ class FileService(
             file.feedId
         )
     }
+
     @Transactional
-    fun saveFile(fileRequest: FileRequest, file: MultipartFile, request: HttpServletRequest): Long {
+    fun saveFile(fileRequest: FileRequest, request: HttpServletRequest): Long {
         val realPath = request.servletContext.getRealPath("/")
         val fileName = UUID.randomUUID().toString()
             .plus(".")
             .plus(
-                file.originalFilename?.split(".")?.get(1)
+                fileRequest.file?.originalFilename?.split(".")?.get(1)
             )
         val filePath = realPath.plus(
             "/".plus(
@@ -55,7 +55,7 @@ class FileService(
             )
         )
 
-        file.transferTo(
+        fileRequest.file?.transferTo(
             java.io.File(filePath)
         )
 
