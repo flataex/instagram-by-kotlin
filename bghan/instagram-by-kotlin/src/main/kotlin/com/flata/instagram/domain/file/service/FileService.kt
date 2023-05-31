@@ -47,9 +47,7 @@ class FileService(
     @Transactional(readOnly = true)
     fun findBy(feed: Feed): List<String> =
         findAllBy(feed)
-            .stream()
             .map { it.url }
-            .toList()
 
     @Transactional(readOnly = true)
     fun findAllBy(feed: Feed): List<File> =

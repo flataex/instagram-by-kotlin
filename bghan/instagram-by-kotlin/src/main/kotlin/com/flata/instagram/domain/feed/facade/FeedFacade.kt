@@ -35,9 +35,7 @@ class FeedFacade(
         val user: User = userService.getUserBy(userId)
 
         return feedService.findAll(user)
-            .stream()
             .map { findByFeed(it.id) }
-            .toList()
     }
 
     @Transactional(readOnly = true)
