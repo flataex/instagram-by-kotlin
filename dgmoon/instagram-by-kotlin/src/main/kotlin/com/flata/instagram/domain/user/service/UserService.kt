@@ -8,7 +8,6 @@ import com.flata.instagram.global.exception.NoDataException
 import com.flata.instagram.global.exception.NotUniqueColumnException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import javax.validation.Valid
 
 @Service
 class UserService(
@@ -42,26 +41,26 @@ class UserService(
     }
 
     @Transactional
-    fun saveUser(@Valid userRequest: UserRequest): Long {
+    fun saveUser(userRequest: UserRequest): Long {
         validateEmail(userRequest.email)
         validateNickname(userRequest.nickname)
         return userRepository.save(userRequest.toEntity()).id
     }
 
     private fun validateEmail(email: String) {
-        if (!userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(email)) {
             throw NotUniqueColumnException()
         }
     }
 
     private fun validateNickname(nickname: String) {
-        if (!userRepository.existsByNickname(nickname)) {
+        if (userRepository.existsByNickname(nickname)) {
             throw NotUniqueColumnException()
         }
     }
 
     @Transactional
-    fun updateUser(@Valid userRequest: UserRequest) {
+    fun updateUser(userRequest: UserRequest) {
         val userToUpdate: Users = userRepository.findById(userRequest.id)
             .orElseThrow { throw NoDataException() }
         userToUpdate.update(
@@ -72,7 +71,7 @@ class UserService(
     }
 
     @Transactional
-    fun deleteUser(@Valid userRequest: UserRequest) {
+    fun deleteUser(userRequest: UserRequest) {
         userRepository.deleteById(userRequest.id)
     }
 }

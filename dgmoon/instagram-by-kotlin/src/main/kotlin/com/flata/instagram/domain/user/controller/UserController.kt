@@ -24,19 +24,19 @@ class UserController(
     }
 
     @PostMapping
-    fun saveUser(@Valid userRequest: UserRequest): ResponseEntity<Any> {
+    fun saveUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Any> {
         val savedUserId = userService.saveUser(userRequest)
         return ResponseEntity.created(URI.create("/users/".plus(savedUserId))).build()
     }
 
     @PutMapping
-    fun updateUser(@Valid userRequest: UserRequest): ResponseEntity<Any> {
+    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Any> {
         userService.updateUser(userRequest)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping
-    fun deleteUser(@Valid userRequest: UserRequest): ResponseEntity<Any> {
+    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Any> {
         userService.deleteUser(userRequest)
         return ResponseEntity.noContent().build()
     }

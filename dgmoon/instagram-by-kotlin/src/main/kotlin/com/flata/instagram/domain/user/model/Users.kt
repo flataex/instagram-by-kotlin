@@ -1,6 +1,7 @@
 package com.flata.instagram.domain.user.model
 
 import com.flata.instagram.global.model.BaseEntity
+import org.springframework.security.crypto.bcrypt.BCrypt
 import javax.persistence.*
 
 @Entity
@@ -17,7 +18,7 @@ data class Users(
 ) : BaseEntity() {
     fun update(email: String, password: String, nickname: String) {
         this.email = email
-        this.password = password
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt())
         this.nickname = nickname
     }
 }
