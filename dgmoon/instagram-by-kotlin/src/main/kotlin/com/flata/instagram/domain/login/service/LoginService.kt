@@ -3,6 +3,7 @@ package com.flata.instagram.domain.login.service
 import com.flata.instagram.domain.login.dto.LoginRequest
 import com.flata.instagram.domain.login.dto.LoginSession
 import com.flata.instagram.domain.user.repository.UserRepository
+import com.flata.instagram.global.exception.InvalidLoginInfoException
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpSession
@@ -19,15 +20,14 @@ class LoginService(
         )
 
         if (isValid) {
-            val loginSession = LoginSession(loginRequest.email)
             session.setAttribute(
                 "session",
-                loginSession
+                LoginSession(loginRequest.email)
             )
             return user.id
         }
 
-        return null
+        throw InvalidLoginInfoException()
     }
 
     fun logout(session: HttpSession) {
