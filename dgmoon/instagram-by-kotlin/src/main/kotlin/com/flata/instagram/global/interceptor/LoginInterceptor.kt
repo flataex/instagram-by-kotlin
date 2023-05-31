@@ -13,12 +13,15 @@ class LoginInterceptor(
     private val userRepository: UserRepository
 ) : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        if (request.method == HttpMethod.GET.name) {
+            return true
+        }
         val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
 
         val userId = authorizationHeader.substring(
-            authorizationHeader.length
-        ).toLong()
+            authorizationHeader.length - 1
+        )
 
-        return (request.method != HttpMethod.GET.name) && (userRepository.existsById(userId))
+        return userRepository.existsById(userId.toLong())
     }
 }
