@@ -13,8 +13,8 @@ class FeedService(
 ) {
     @Transactional(readOnly = true)
     fun getFeeds(): List<FeedResponse> {
-        val feeds = feedRepository.findAll()
-        return feeds.stream()
+        return feedRepository.findAll()
+            .stream()
             .map { feed ->
                 FeedResponse(
                     feed.id,

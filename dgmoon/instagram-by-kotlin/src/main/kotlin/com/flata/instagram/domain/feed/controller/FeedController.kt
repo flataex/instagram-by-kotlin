@@ -6,7 +6,9 @@ import com.flata.instagram.domain.feed.service.FeedService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import javax.validation.Valid
 
+@RestController
 @RequestMapping("/feeds")
 class FeedController(
     private val feedService: FeedService
@@ -22,13 +24,13 @@ class FeedController(
     }
 
     @PostMapping
-    fun saveFeed(feedRequest: FeedRequest): ResponseEntity<Any> {
+    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Any> {
         val savedFeedId = feedService.saveFeed(feedRequest)
         return ResponseEntity.created(URI.create("/feeds/".plus(savedFeedId))).build()
     }
 
     @DeleteMapping
-    fun deleteFeed(feedRequest: FeedRequest): ResponseEntity<Any> {
+    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Any> {
         feedService.deleteFeed(feedRequest)
         return ResponseEntity.noContent().build()
     }
