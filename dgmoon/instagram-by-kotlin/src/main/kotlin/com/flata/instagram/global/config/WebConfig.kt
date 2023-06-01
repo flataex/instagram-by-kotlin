@@ -12,5 +12,6 @@ class WebConfig(
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(LoginInterceptor(userRepository))
+            .addPathPatterns("/**/feeds")
     }
 }
