@@ -7,12 +7,12 @@ import javax.validation.constraints.NotEmpty
 
 class UserRequest(
     val id: Long,
-    @NotEmpty
-    @Email
+    @field:NotEmpty
+    @field:Email
     val email: String,
-    @NotEmpty
+    @field:NotEmpty
     val password: String,
-    @NotEmpty
+    @field:NotEmpty
     val nickname: String
 ) {
     fun toEntity(): Users {

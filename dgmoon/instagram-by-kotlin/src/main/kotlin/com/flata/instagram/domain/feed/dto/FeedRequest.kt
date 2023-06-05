@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull
 
 class FeedRequest(
     val id: Long,
-    @NotNull
+    @field:NotNull
     val userId: Long,
-    @NotNull
+    @field:NotNull
     val text: String
 ) {
     fun toEntity(): Feed {

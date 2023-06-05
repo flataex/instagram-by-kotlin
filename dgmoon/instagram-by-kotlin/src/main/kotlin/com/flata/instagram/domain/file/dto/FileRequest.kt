@@ -5,10 +5,10 @@ import org.springframework.web.multipart.MultipartFile
 
 class FileRequest(
     val id: Long,
-    @NotNull
+    @field:NotNull
     var url: String?,
-    @NotNull
+    @field:NotNull
     var feedId: Long,
-    @NotNull
+    @field:NotNull
     var file: MultipartFile?
 )

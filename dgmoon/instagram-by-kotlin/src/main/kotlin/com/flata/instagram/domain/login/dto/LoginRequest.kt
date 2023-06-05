@@ -3,8 +3,8 @@ package com.flata.instagram.domain.login.dto
 import javax.validation.constraints.NotEmpty
 
 class LoginRequest(
-    @NotEmpty
+    @field:NotEmpty
     val email: String,
-    @NotEmpty
+    @field:NotEmpty
     val password: String
 )
