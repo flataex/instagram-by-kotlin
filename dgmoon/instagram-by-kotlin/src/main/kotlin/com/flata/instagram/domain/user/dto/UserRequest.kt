@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 
-class UserRequest(
+data class UserRequest(
     val id: Long,
     @field:NotEmpty
     @field:Email

@@ -1,5 +1,5 @@
 package com.flata.instagram.domain.login.dto
 
-class LoginSession(
+data class LoginSession(
     val email: String
 )
