@@ -1,8 +1,10 @@
 spring:
   jpa:
+    database: mysql
+    defer-datasource-initialization: true
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       use-new-id-generator-mappings: false
@@ -10,3 +12,28 @@ spring:
     properties:
       hibernate.format_sql: true
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/instagram?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+  sql:
+    init:
+      platform: mysql
+      encoding: UTF-8
+      schema-locations: classpath:schema.sql
+      mode: always
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+file:
+  root:
+    path: /Users/baekgyu/IdeaProjects/git-instagram-by-kotlin/bghan/instagram-by-kotlin/src/main/resources/files
