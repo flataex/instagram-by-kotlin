@@ -12,8 +12,8 @@ class FeedService(
     private val feedRepository: FeedRepository
 ) {
     @Transactional(readOnly = true)
-    fun getFeeds(): List<FeedResponse> {
-        return feedRepository.findAll()
+    fun getFeeds(): List<FeedResponse> =
+        feedRepository.findAll()
             .stream()
             .map { feed ->
                 FeedResponse(
@@ -22,30 +22,27 @@ class FeedService(
                     feed.text
                 )
             }.toList()
-    }
 
     @Transactional(readOnly = true)
-    fun getFeed(id: Long): FeedResponse {
-        val feed = feedRepository.findById(id)
+    fun getFeed(id: Long): FeedResponse =
+        feedRepository.findById(id)
             .orElseThrow {
                 throw NoDataException()
+            }.let {
+                FeedResponse(
+                    it.id,
+                    it.userId,
+                    it.text
+                )
             }
-        return FeedResponse(
-            feed.id,
-            feed.userId,
-            feed.text
-        )
-    }
 
     @Transactional
-    fun saveFeed(feedRequest: FeedRequest): Long {
-        return feedRepository.save(feedRequest.toEntity()).id
-    }
+    fun saveFeed(feedRequest: FeedRequest): Long =
+        feedRepository.save(feedRequest.toEntity()).id
 
     @Transactional
-    fun deleteFeed(feedRequest: FeedRequest) {
-        val feedToDelete = feedRepository.findById(feedRequest.id)
+    fun deleteFeed(feedRequest: FeedRequest) =
+        feedRepository.findById(feedRequest.id)
             .orElseThrow { throw NoDataException() }
-        feedToDelete.delete()
-    }
+            .delete()
 }

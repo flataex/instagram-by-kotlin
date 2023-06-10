@@ -14,19 +14,22 @@ class FeedController(
     private val feedService: FeedService
 ) {
     @GetMapping
-    fun getFeeds(): ResponseEntity<List<FeedResponse>> {
-        return ResponseEntity.ok(feedService.getFeeds())
-    }
+    fun getFeeds(): ResponseEntity<List<FeedResponse>> =
+        ResponseEntity.ok(feedService.getFeeds())
 
     @GetMapping("/{id}")
-    fun getFeed(@PathVariable id: Long): ResponseEntity<FeedResponse> {
-        return ResponseEntity.ok(feedService.getFeed(id))
-    }
+    fun getFeed(@PathVariable id: Long): ResponseEntity<FeedResponse> =
+        ResponseEntity.ok(feedService.getFeed(id))
 
     @PostMapping
     fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Any> {
-        val savedFeedId = feedService.saveFeed(feedRequest)
-        return ResponseEntity.created(URI.create("/feeds/".plus(savedFeedId))).build()
+        val uri = feedService.saveFeed(feedRequest).let {
+            URI.create("/feed".plus(it))
+        }.also {
+            ResponseEntity.created(it)
+        }
+
+        return ResponseEntity.created(uri).build()
     }
 
     @DeleteMapping

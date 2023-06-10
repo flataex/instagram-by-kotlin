@@ -1,7 +1,6 @@
 package com.flata.instagram.domain.login.service
 
 import com.flata.instagram.domain.login.dto.LoginRequest
-import com.flata.instagram.domain.login.dto.LoginSession
 import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.InvalidLoginInfoException
 import org.springframework.security.crypto.bcrypt.BCrypt
@@ -13,24 +12,17 @@ class LoginService(
     private val userRepository: UserRepository
 ) {
     fun login(loginRequest: LoginRequest, session: HttpSession): Long? {
-        val user = userRepository.findByEmail(loginRequest.email)
-        val isValid = BCrypt.checkpw(
-            loginRequest.password,
-            user.password
-        )
-
-        if (isValid) {
-            session.setAttribute(
-                "session",
-                LoginSession(loginRequest.email)
+        val user = userRepository.findByEmail(loginRequest.email) ?: throw InvalidLoginInfoException()
+        val userId = user.id
+        return userId.takeIf {
+            BCrypt.checkpw(
+                userRepository.findByEmail(loginRequest.email)!!
+                    .password,
+                loginRequest.password
             )
-            return user.id
         }
-
-        throw InvalidLoginInfoException()
     }
 
-    fun logout(session: HttpSession) {
+    fun logout(session: HttpSession) =
         session.invalidate()
-    }
 }

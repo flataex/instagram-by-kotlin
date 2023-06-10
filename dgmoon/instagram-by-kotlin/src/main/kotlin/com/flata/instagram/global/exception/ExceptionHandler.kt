@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(NoDataException::class)
-    fun handleNoDataException(): ResponseEntity<Any> {
-        return ResponseEntity.noContent().build()
-    }
+    fun handleNoDataException(): ResponseEntity<Any> =
+        ResponseEntity.noContent().build()
 
     @ExceptionHandler(NotUniqueColumnException::class)
-    fun handleNotUniqueColumnException(): ResponseEntity<Any> {
-        return ResponseEntity.internalServerError().build()
-    }
+    fun handleNotUniqueColumnException(): ResponseEntity<Any> =
+        ResponseEntity.internalServerError().build()
 }
