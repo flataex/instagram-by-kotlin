@@ -15,12 +15,11 @@ data class UserRequest(
     @field:NotEmpty
     val nickname: String
 ) {
-    fun toEntity(): Users {
-        return Users(
+    fun toEntity(): Users =
+        Users(
             this.id,
             this.email,
             BCrypt.hashpw(this.password, BCrypt.gensalt()),
             this.nickname
         )
-    }
 }

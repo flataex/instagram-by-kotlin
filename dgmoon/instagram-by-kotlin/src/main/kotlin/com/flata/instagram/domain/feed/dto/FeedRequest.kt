@@ -10,11 +10,10 @@ data class FeedRequest(
     @field:NotNull
     val text: String
 ) {
-    fun toEntity(): Feed {
-        return Feed(
+    fun toEntity(): Feed =
+        Feed(
             id,
             userId,
             text
         )
-    }
 }

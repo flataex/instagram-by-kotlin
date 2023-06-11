@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty
 
 data class LoginRequest(
     @field:NotEmpty
-    var email: String,
+    val email: String,
     @field:NotEmpty
-    var password: String
+    val password: String
 )
