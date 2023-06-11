@@ -22,7 +22,7 @@ class FeedController(
         ResponseEntity.ok(feedService.getFeed(id))
 
     @PostMapping
-    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Void> =
+    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
         ResponseEntity.created(
             feedService.saveFeed(feedRequest).let {
                 URI.create("/feed/".plus(it))
@@ -31,7 +31,7 @@ class FeedController(
 
 
     @DeleteMapping
-    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Void> {
+    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> {
         feedService.deleteFeed(feedRequest)
         return ResponseEntity.noContent().build()
     }

@@ -18,6 +18,6 @@ class LoginController(
         ResponseEntity.ok(loginService.login(loginRequest, session))
 
     @PostMapping("/logout")
-    fun logout(session: HttpSession): ResponseEntity<Any> =
+    fun logout(session: HttpSession): ResponseEntity<Unit> =
         ResponseEntity.ok(loginService.logout(session))
 }
