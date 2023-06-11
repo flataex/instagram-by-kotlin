@@ -13,8 +13,7 @@ class LoginService(
 ) {
     fun login(loginRequest: LoginRequest, session: HttpSession): Long? {
         val user = userRepository.findByEmail(loginRequest.email) ?: throw InvalidLoginInfoException()
-        val userId = user.id
-        return userId.takeIf {
+        return user.id.takeIf {
             BCrypt.checkpw(
                 userRepository.findByEmail(loginRequest.email)!!
                     .password,
