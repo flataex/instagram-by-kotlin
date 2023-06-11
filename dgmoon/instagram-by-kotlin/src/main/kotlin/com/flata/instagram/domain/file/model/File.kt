@@ -4,7 +4,7 @@ import com.flata.instagram.global.model.BaseEntity
 import javax.persistence.*
 
 @Entity
-data class File(
+class File(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long,

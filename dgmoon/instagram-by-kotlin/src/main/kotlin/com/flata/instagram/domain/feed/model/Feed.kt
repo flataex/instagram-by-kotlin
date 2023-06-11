@@ -4,10 +4,10 @@ import com.flata.instagram.global.model.BaseEntity
 import javax.persistence.*
 
 @Entity
-data class Feed(
+class Feed(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    var id: Long,
     @Column(name = "user_id", nullable = false)
     var userId: Long,
     @Column(nullable = false)

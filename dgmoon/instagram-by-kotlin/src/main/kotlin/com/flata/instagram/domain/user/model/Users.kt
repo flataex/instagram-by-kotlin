@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt
 import javax.persistence.*
 
 @Entity
-data class Users(
+class Users(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long,
