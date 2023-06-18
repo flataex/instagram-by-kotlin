@@ -14,6 +14,8 @@ data class FeedRequest(
         Feed(
             id,
             userId,
-            text
+            text,
+            null,
+            null,
         )
 }
