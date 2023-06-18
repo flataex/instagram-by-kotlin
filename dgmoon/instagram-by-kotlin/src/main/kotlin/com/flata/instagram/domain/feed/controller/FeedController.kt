@@ -3,6 +3,10 @@ package com.flata.instagram.domain.feed.controller
 import com.flata.instagram.domain.feed.dto.FeedRequest
 import com.flata.instagram.domain.feed.dto.FeedResponse
 import com.flata.instagram.domain.feed.service.FeedService
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -14,7 +18,14 @@ class FeedController(
     private val feedService: FeedService
 ) {
     @GetMapping
-    fun getFeeds(): ResponseEntity<List<FeedResponse>> =
+    fun getFeeds(
+        @PageableDefault(
+            size = 10,
+            page = 1,
+            sort = ["id"],
+            direction = Sort.Direction.DESC
+        ) pageable: Pageable
+    ): ResponseEntity<List<FeedResponse>> =
         ResponseEntity.ok(feedService.getFeeds())
 
     @GetMapping("/{id}")
@@ -25,7 +36,7 @@ class FeedController(
     fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
         ResponseEntity.created(
             feedService.saveFeed(feedRequest).let {
-                URI.create("/feed/".plus(it))
+                URI.create("/feeds/".plus(it))
             }
         ).build()
 
