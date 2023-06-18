@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.feed.model
 
+import com.flata.instagram.domain.like.model.Like
 import com.flata.instagram.global.model.BaseEntity
 import org.hibernate.annotations.Comment
 import javax.persistence.*
@@ -14,7 +15,11 @@ class Feed(
     var userId: Long,
     @Column(columnDefinition = "text", nullable = false)
     @Comment("게시글")
-    var content: String
+    var content: String,
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    var comments: List<com.flata.instagram.domain.comment.model.Comment>?,
+    @OneToMany(mappedBy = "like")
+    var likes: List<Like>?
 ) : BaseEntity() {
     fun update(userId: Long, text: String) {
         this.userId = userId

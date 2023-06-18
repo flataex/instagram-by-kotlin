@@ -17,7 +17,9 @@ class Comment(
     var feedId: Long,
     @Column(columnDefinition = "text", nullable = false)
     @Comment("댓글")
-    var content: String
+    var content: String,
+    @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
+    var replies: List<Reply>?
 ) : BaseEntity() {
     fun update(content: String) {
         this.content = content

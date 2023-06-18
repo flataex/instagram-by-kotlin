@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.like.model
 
+import com.flata.instagram.global.model.BaseEntity
 import org.hibernate.annotations.Comment
 import javax.persistence.*
 
@@ -15,4 +16,4 @@ class Like(
     @Column(name = "feed_id", nullable = false)
     @Comment("게시글 ID")
     var feedId: Long
-)
+) : BaseEntity()

@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.follow.model
 
+import com.flata.instagram.global.model.BaseEntity
 import org.hibernate.annotations.Comment
 import javax.persistence.*
 
@@ -14,4 +15,4 @@ class Follow(
     @Column(name = "to_user_id", nullable = false)
     @Comment("팔로우 당한 사람")
     var toUserId: Long
-)
+) : BaseEntity()
