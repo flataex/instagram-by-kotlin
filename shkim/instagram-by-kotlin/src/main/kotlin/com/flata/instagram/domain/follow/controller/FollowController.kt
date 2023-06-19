@@ -25,9 +25,9 @@ class FollowController(
     @DeleteMapping("/{id}")
     fun delete(
         @LoginUser userId: Long,
-        @PathVariable(value = "id") toUserId: Long
+        @PathVariable(value = "id") followId: Long
     ): ResponseEntity<Void> {
-        followService.delete(userId, toUserId)
+        followService.delete(userId, followId)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }

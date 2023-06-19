@@ -28,9 +28,10 @@ class FollowService(
 
     fun delete(
         userId: Long,
-        toUserId: Long
+        followId: Long
     ) {
-        followRepository.findByFromUserIdAndToUserId(userId, toUserId)
+        followRepository.findByIdOrNull(followId)
+            ?.takeIf { it.fromUser.id == userId }
             ?.delete()
             ?: throw NotFoundException()
     }
