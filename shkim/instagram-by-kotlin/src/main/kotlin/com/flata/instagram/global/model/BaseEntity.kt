@@ -21,4 +21,8 @@ abstract class BaseEntity(
 
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null
-)
+) {
+    fun delete() {
+        this.deletedAt = LocalDateTime.now()
+    }
+}
