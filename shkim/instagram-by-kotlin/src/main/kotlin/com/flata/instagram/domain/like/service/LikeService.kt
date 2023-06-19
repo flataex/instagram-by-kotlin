@@ -30,9 +30,10 @@ class LikeService(
 
     fun delete(
         userId: Long,
-        feedId: Long
+        likeId: Long
     ) {
-        likeRepository.findByUserIdAndFeedId(userId, feedId)
+        likeRepository.findByIdOrNull(likeId)
+            ?.takeIf { it.user.id == userId }
             ?.delete()
             ?: throw NotFoundException()
     }
