@@ -3,10 +3,12 @@ package com.flata.instagram.domain.like.model
 import com.flata.instagram.domain.feed.model.Feed
 import com.flata.instagram.domain.user.model.User
 import com.flata.instagram.global.model.BaseEntity
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
 @Table(name = "likes")
+@Where(clause = "deleted_at is null")
 class Like(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
