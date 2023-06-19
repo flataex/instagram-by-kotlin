@@ -22,7 +22,7 @@ class FollowController(
         return ResponseEntity(followService.save(userId, toUserId), HttpStatus.CREATED)
     }
 
-    @PostMapping("/{id}")
+    @DeleteMapping("/{id}")
     fun delete(
         @LoginUser userId: Long,
         @PathVariable(value = "id") toUserId: Long
