@@ -22,12 +22,12 @@ class LikeController(
         return ResponseEntity(likeService.save(userId, feedId), HttpStatus.CREATED)
     }
 
-    @DeleteMapping("/{feed-id}")
+    @DeleteMapping("/{id}")
     fun delete(
         @LoginUser userId: Long,
-        @PathVariable(value = "feed-id") feedId: Long
+        @PathVariable(value = "id") likeId: Long
     ): ResponseEntity<Long> {
-        likeService.delete(userId, feedId)
+        likeService.delete(userId, likeId)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }
