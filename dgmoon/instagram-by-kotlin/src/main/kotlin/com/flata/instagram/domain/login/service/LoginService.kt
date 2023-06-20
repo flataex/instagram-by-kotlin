@@ -1,6 +1,7 @@
 package com.flata.instagram.domain.login.service
 
 import com.flata.instagram.domain.login.dto.LoginRequest
+import com.flata.instagram.domain.login.dto.LoginSession
 import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.InvalidLoginInfoException
 import org.springframework.security.crypto.bcrypt.BCrypt

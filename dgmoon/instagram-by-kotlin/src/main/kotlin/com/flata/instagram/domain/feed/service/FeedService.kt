@@ -4,6 +4,7 @@ import com.flata.instagram.domain.feed.dto.FeedRequest
 import com.flata.instagram.domain.feed.dto.FeedResponse
 import com.flata.instagram.domain.feed.repository.FeedRepository
 import com.flata.instagram.global.exception.NoDataException
+
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
