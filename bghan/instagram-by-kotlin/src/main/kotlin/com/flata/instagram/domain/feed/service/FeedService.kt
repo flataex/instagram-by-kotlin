@@ -6,6 +6,7 @@ import com.flata.instagram.domain.feed.repository.FeedRepository
 import com.flata.instagram.domain.user.converter.toDTO
 import com.flata.instagram.domain.user.model.User
 import com.flata.instagram.global.exception.feed.FeedNotFoundException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -29,7 +30,7 @@ class FeedService(
 
     @Transactional(readOnly = true)
     fun findById(feedId: Long): Feed =
-        feedRepository.findById(feedId).orElseThrow { FeedNotFoundException() }
+        feedRepository.findByIdOrNull(feedId) ?: throw FeedNotFoundException()
 
     fun deleteBy(feed: Feed) =
         feedRepository.delete(feed)
