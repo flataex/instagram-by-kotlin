@@ -9,7 +9,6 @@ import com.flata.instagram.domain.feed.service.FeedService
 import com.flata.instagram.domain.file.service.FileService
 import com.flata.instagram.domain.user.model.User
 import com.flata.instagram.domain.user.service.UserService
-import com.flata.instagram.global.exception.feed.NotFeedOwnerException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -25,14 +24,14 @@ class FeedFacade(
 ) {
 
     fun save(userId: Long, request: FeedSaveRequest) {
-        val user: User = userService.getUserBy(userId)
+        val user: User = userService.findBy(userId)
         val feed: Feed = feedService.save(request, user)
         fileService.saveAll(request.images, feed)
     }
 
     @Transactional(readOnly = true)
     fun findByUser(userId: Long): List<FeedResponse> {
-        val user: User = userService.getUserBy(userId)
+        val user: User = userService.findBy(userId)
 
         return feedService.findAll(user)
             .map { findByFeed(it.id) }
