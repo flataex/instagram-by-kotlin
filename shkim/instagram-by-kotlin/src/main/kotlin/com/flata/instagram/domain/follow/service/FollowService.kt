@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.follow.service
 
+import com.flata.instagram.domain.follow.controller.FollowSaveRequest
 import com.flata.instagram.domain.follow.model.Follow
 import com.flata.instagram.domain.follow.repository.FollowRepository
 import com.flata.instagram.domain.user.repository.UserRepository
@@ -17,11 +18,11 @@ class FollowService(
 
     fun save(
         userId: Long,
-        toUserId: Long
+        request: FollowSaveRequest
     ): Long {
         return Follow(
                 fromUser = userRepository.findByIdOrNull(userId) ?: throw NotFoundException(),
-                toUser = userRepository.findByIdOrNull(toUserId) ?: throw NotFoundException(),
+                toUser = userRepository.findByIdOrNull(request.toUserId) ?: throw NotFoundException(),
             ).let { followRepository.save(it) }
             .id
     }
