@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.follow.controller
 
+import com.flata.instagram.domain.follow.controller.dto.FollowSaveRequest
 import com.flata.instagram.domain.follow.service.FollowService
 import com.flata.instagram.global.model.LoginUser
 import org.springframework.http.HttpStatus
