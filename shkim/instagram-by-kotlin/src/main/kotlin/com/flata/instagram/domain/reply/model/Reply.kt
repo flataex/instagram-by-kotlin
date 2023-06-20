@@ -3,10 +3,12 @@ package com.flata.instagram.domain.reply.model
 import com.flata.instagram.domain.comment.model.Comment
 import com.flata.instagram.domain.user.model.User
 import com.flata.instagram.global.model.BaseEntity
+import org.hibernate.annotations.Where
 import javax.persistence.*
 
 @Entity
 @Table(name = "reply")
+@Where(clause = "deleted_at is null")
 class Reply(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
