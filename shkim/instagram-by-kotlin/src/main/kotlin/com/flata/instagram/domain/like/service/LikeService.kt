@@ -1,6 +1,7 @@
 package com.flata.instagram.domain.like.service
 
 import com.flata.instagram.domain.feed.repository.FeedRepository
+import com.flata.instagram.domain.like.controller.dto.LikeSaveRequest
 import com.flata.instagram.domain.like.model.Like
 import com.flata.instagram.domain.like.repository.LikeRepository
 import com.flata.instagram.domain.user.repository.UserRepository
@@ -19,11 +20,11 @@ class LikeService(
 
     fun save(
         userId: Long,
-        feedId: Long
+        request: LikeSaveRequest
     ): Long {
         return Like(
                 user = userRepository.findByIdOrNull(userId) ?: throw NotFoundException(),
-                feed = feedRepository.findByIdOrNull(feedId) ?: throw NotFoundException()
+                feed = feedRepository.findByIdOrNull(request.feedId) ?: throw NotFoundException()
             ).let { likeRepository.save(it) }
             .id
     }
