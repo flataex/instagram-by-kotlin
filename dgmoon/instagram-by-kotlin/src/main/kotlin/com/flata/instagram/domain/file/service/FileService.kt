@@ -8,38 +8,37 @@ import com.flata.instagram.global.exception.NoDataException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 
 @Service
 class FileService(
-    private val fileRepository: FileRepository,
+        private val fileRepository: FileRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getFiles(): List<FileResponse> {
-        val files = fileRepository.findAll()
-        return files.stream()
-            .map { file ->
-                FileResponse(
-                    file.id,
-                    file.url,
-                    file.feedId
-                )
-            }.toList()
-
-    }
+    fun getFiles(): List<FileResponse> =
+            fileRepository.findAll()
+                    .stream()
+                    .map { file ->
+                        FileResponse(
+                                file.id,
+                                file.url,
+                                file.feedId
+                        )
+                    }.toList()
 
     @Transactional(readOnly = true)
-    fun getFile(id: Long): FileResponse {
-        val file = fileRepository.findById(id)
-            .orElseThrow {
-                throw NoDataException()
-            }
-        return FileResponse(
-            file.id,
-            file.url,
-            file.feedId
-        )
-    }
+    fun getFile(id: Long): FileResponse =
+            fileRepository.findById(id)
+                    .orElseThrow {
+                        throw NoDataException()
+                    }.let {
+                        FileResponse(
+                                it.id,
+                                it.url,
+                                it.feedId
+                        )
+                    }
 
     @Transactional
     fun saveFile(fileRequest: FileRequest, request: HttpServletRequest): Long {
@@ -69,9 +68,8 @@ class FileService(
     }
 
     @Transactional
-    fun deleteFile(fileRequest: FileRequest) {
-        val fileToUpdate = fileRepository.findById(fileRequest.id)
-            .orElseThrow { throw NoDataException() }
-        fileToUpdate.delete()
-    }
+    fun deleteFile(fileRequest: FileRequest) =
+        fileRepository.findById(fileRequest.id)
+                .orElseThrow { throw NoDataException() }
+                .delete()
 }

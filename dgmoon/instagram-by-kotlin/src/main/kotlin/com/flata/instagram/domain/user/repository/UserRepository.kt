@@ -1,10 +1,10 @@
 package com.flata.instagram.domain.user.repository
 
-import com.flata.instagram.domain.user.model.Users
+import com.flata.instagram.domain.user.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface UserRepository : JpaRepository<Users, Long> {
-    fun findByEmail(email: String): Users
+interface UserRepository : JpaRepository<User, Long> {
+    fun findByEmail(email: String): User?
     fun existsByEmail(email: String): Boolean
     fun existsByNickname(nickname: String): Boolean
 }

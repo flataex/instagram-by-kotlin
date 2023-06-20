@@ -16,12 +16,13 @@ class LoginInterceptor(
         if (request.method == HttpMethod.GET.name) {
             return true
         }
-        val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
-
-        val userId = authorizationHeader.substring(
-            authorizationHeader.length - 1
-        )
-
-        return userRepository.existsById(userId.toLong())
+        return request.getHeader(HttpHeaders.AUTHORIZATION)
+            .let {
+                it.substring(
+                    it.length - 1
+                )
+            }.let {
+                userRepository.existsById(it.toLong())
+            }
     }
 }

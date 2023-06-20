@@ -14,23 +14,23 @@ class FileController(
     private val fileService: FileService
 ) {
     @GetMapping
-    fun getFiles(): ResponseEntity<List<FileResponse>> {
-        return ResponseEntity.ok(fileService.getFiles())
-    }
+    fun getFiles(): ResponseEntity<List<FileResponse>> =
+        ResponseEntity.ok(fileService.getFiles())
 
     @GetMapping("/{id}")
-    fun getFiles(@PathVariable id: Long): ResponseEntity<FileResponse> {
-        return ResponseEntity.ok(fileService.getFile(id))
-    }
+    fun getFiles(@PathVariable id: Long): ResponseEntity<FileResponse> =
+        ResponseEntity.ok(fileService.getFile(id))
 
     @PostMapping
-    fun getFile(@Valid @RequestBody fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Any> {
-        val savedFileId = fileService.saveFile(fileRequest, request)
-        return ResponseEntity.created(URI.create("/files/".plus(savedFileId))).build()
-    }
+    fun saveFile(@Valid @RequestBody fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Unit> =
+        ResponseEntity.created(
+            fileService.saveFile(fileRequest, request).let {
+                URI.create("/files/".plus(it))
+            }
+        ).build()
 
     @DeleteMapping
-    fun deleteFile(@Valid @RequestBody fileRequest: FileRequest): ResponseEntity<Any> {
+    fun deleteFile(@Valid @RequestBody fileRequest: FileRequest): ResponseEntity<Unit> {
         fileService.deleteFile(fileRequest)
         return ResponseEntity.noContent().build()
     }

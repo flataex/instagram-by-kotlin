@@ -14,29 +14,29 @@ class UserController(
     private val userService: UserService
 ) {
     @GetMapping
-    fun getUsers(): ResponseEntity<List<UserResponse>> {
-        return ResponseEntity.ok(userService.getUsers())
-    }
+    fun getUsers(): ResponseEntity<List<UserResponse>> =
+        ResponseEntity.ok(userService.getUsers())
 
     @GetMapping("/{id}")
-    fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
-        return ResponseEntity.ok(userService.getUser(id))
-    }
+    fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> =
+        ResponseEntity.ok(userService.getUser(id))
 
     @PostMapping
-    fun saveUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Any> {
-        val savedUserId = userService.saveUser(userRequest)
-        return ResponseEntity.created(URI.create("/users/".plus(savedUserId))).build()
-    }
+    fun saveUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
+        ResponseEntity.created(
+            userService.saveUser(userRequest).let {
+                URI.create("/users/".plus(it))
+            }
+        ).build()
 
     @PutMapping
-    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Any> {
+    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> {
         userService.updateUser(userRequest)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping
-    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Any> {
+    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> {
         userService.deleteUser(userRequest)
         return ResponseEntity.noContent().build()
     }

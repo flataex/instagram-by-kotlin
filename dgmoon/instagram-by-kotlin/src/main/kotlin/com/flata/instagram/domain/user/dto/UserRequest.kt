@@ -1,6 +1,6 @@
 package com.flata.instagram.domain.user.dto
 
-import com.flata.instagram.domain.user.model.Users
+import com.flata.instagram.domain.user.model.User
 import org.springframework.security.crypto.bcrypt.BCrypt
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
@@ -15,12 +15,11 @@ data class UserRequest(
     @field:NotEmpty
     val nickname: String
 ) {
-    fun toEntity(): Users {
-        return Users(
+    fun toEntity(): User =
+        User(
             this.id,
             this.email,
             BCrypt.hashpw(this.password, BCrypt.gensalt()),
             this.nickname
         )
-    }
 }

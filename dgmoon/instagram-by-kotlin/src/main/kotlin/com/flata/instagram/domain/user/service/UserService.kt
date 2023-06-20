@@ -2,10 +2,10 @@ package com.flata.instagram.domain.user.service
 
 import com.flata.instagram.domain.user.dto.UserRequest
 import com.flata.instagram.domain.user.dto.UserResponse
-import com.flata.instagram.domain.user.model.Users
 import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.NoDataException
 import com.flata.instagram.global.exception.NotUniqueColumnException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,9 +14,8 @@ class UserService(
     private val userRepository: UserRepository
 ) {
     @Transactional(readOnly = true)
-    fun getUsers(): List<UserResponse> {
-        return userRepository.findAll()
-            .stream()
+    fun getUsers(): List<UserResponse> =
+        userRepository.findAll()
             .map { users ->
                 UserResponse(
                     users.id,
@@ -25,13 +24,10 @@ class UserService(
                     users.nickname
                 )
             }
-            .toList()
-    }
 
     @Transactional(readOnly = true)
     fun getUser(id: Long): UserResponse {
-        val user = userRepository.findById(id)
-            .orElseThrow { throw NoDataException() }
+        val user = userRepository.findByIdOrNull(id) ?: throw NoDataException()
         return UserResponse(
             user.id,
             user.email,
@@ -40,30 +36,30 @@ class UserService(
         )
     }
 
+
     @Transactional
-    fun saveUser(userRequest: UserRequest): Long {
-        validateEmail(userRequest.email)
-        validateNickname(userRequest.nickname)
-        return userRepository.save(userRequest.toEntity()).id
-    }
+    fun saveUser(userRequest: UserRequest): Long =
+        run {
+            validateEmail(userRequest.email)
+            validateNickname(userRequest.nickname)
 
-    private fun validateEmail(email: String) {
-        if (userRepository.existsByEmail(email)) {
+            userRepository.save(userRequest.toEntity()).id
+        }
+
+    private fun validateEmail(email: String) =
+        check(!userRepository.existsByEmail(email)) {
             throw NotUniqueColumnException()
         }
-    }
 
-    private fun validateNickname(nickname: String) {
-        if (userRepository.existsByNickname(nickname)) {
+    private fun validateNickname(nickname: String) =
+        check(!userRepository.existsByNickname(nickname)) {
             throw NotUniqueColumnException()
         }
-    }
 
     @Transactional
     fun updateUser(userRequest: UserRequest) {
-        val userToUpdate: Users = userRepository.findById(userRequest.id)
-            .orElseThrow { throw NoDataException() }
-        userToUpdate.update(
+        val user = userRepository.findByIdOrNull(userRequest.id) ?: throw NoDataException()
+        user.update(
             userRequest.email,
             userRequest.password,
             userRequest.nickname
@@ -71,7 +67,6 @@ class UserService(
     }
 
     @Transactional
-    fun deleteUser(userRequest: UserRequest) {
+    fun deleteUser(userRequest: UserRequest) =
         userRepository.deleteById(userRequest.id)
-    }
 }

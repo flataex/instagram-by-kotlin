@@ -14,12 +14,10 @@ class LoginController(
     private val loginService: LoginService,
 ) {
     @PostMapping("/login")
-    fun login(@Valid @RequestBody loginRequest: LoginRequest, session: HttpSession): ResponseEntity<Long?> {
-        return ResponseEntity.ok(loginService.login(loginRequest, session))
-    }
+    fun login(@Valid @RequestBody loginRequest: LoginRequest, session: HttpSession): ResponseEntity<Long?> =
+        ResponseEntity.ok(loginService.login(loginRequest, session))
 
     @PostMapping("/logout")
-    fun logout(session: HttpSession): ResponseEntity<Any> {
-        return ResponseEntity.ok(loginService.logout(session))
-    }
+    fun logout(session: HttpSession): ResponseEntity<Unit> =
+        ResponseEntity.ok(loginService.logout(session))
 }

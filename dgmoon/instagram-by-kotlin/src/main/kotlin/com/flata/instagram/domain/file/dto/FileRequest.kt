@@ -6,9 +6,9 @@ import org.springframework.web.multipart.MultipartFile
 data class FileRequest(
     val id: Long,
     @field:NotNull
-    var url: String?,
+    val url: String?,
     @field:NotNull
-    var feedId: Long,
+    val feedId: Long,
     @field:NotNull
-    var file: MultipartFile?
+    val file: MultipartFile?
 )
