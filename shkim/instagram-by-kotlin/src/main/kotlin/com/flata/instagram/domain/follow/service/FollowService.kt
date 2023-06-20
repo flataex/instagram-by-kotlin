@@ -1,6 +1,6 @@
 package com.flata.instagram.domain.follow.service
 
-import com.flata.instagram.domain.follow.controller.FollowSaveRequest
+import com.flata.instagram.domain.follow.controller.dto.FollowSaveRequest
 import com.flata.instagram.domain.follow.model.Follow
 import com.flata.instagram.domain.follow.repository.FollowRepository
 import com.flata.instagram.domain.user.repository.UserRepository
