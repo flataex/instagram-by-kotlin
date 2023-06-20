@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import java.io.PrintWriter
 import java.io.StringWriter
 import javax.validation.ConstraintViolationException
+import javax.validation.ValidationException
 
 @Component
 class ExceptionConverter(
@@ -21,6 +22,11 @@ class ExceptionConverter(
             .toString()
             .trim()
 }
+
+fun ValidationException.toResponseEntity(): ResponseEntity<ErrorResponse> = ResponseEntity(
+    ErrorResponse(this.cause?.message.orEmpty()),
+    HttpStatus.BAD_REQUEST
+)
 
 fun MethodArgumentNotValidException.toResponseEntity(): ResponseEntity<ErrorResponse> = ResponseEntity.badRequest()
     .body(this.convertsToValidationMessage())
