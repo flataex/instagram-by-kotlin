@@ -1,5 +1,7 @@
 package com.flata.instagram.domain.feed.service
 
+import com.flata.instagram.domain.comment.controller.dto.CommentResponse
+import com.flata.instagram.domain.comment.repository.CommentRepository
 import com.flata.instagram.domain.feed.controller.dto.FeedResponse
 import com.flata.instagram.domain.feed.controller.dto.FeedSaveRequest
 import com.flata.instagram.domain.feed.model.Feed
@@ -7,6 +9,10 @@ import com.flata.instagram.domain.feed.repository.FeedRepository
 import com.flata.instagram.domain.file.controller.dto.FileResponse
 import com.flata.instagram.domain.file.model.File
 import com.flata.instagram.domain.file.repository.FileRepository
+import com.flata.instagram.domain.like.controller.dto.LikeResponse
+import com.flata.instagram.domain.like.repository.LikeRepository
+import com.flata.instagram.domain.reply.controller.dto.ReplyResponse
+import com.flata.instagram.domain.reply.repository.ReplyRepository
 import com.flata.instagram.domain.user.model.User
 import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.createFileName
@@ -22,6 +28,9 @@ import java.nio.file.Paths
 class FeedService(
     private val userRepository: UserRepository,
     private val feedRepository: FeedRepository,
+    private val commentRepository: CommentRepository,
+    private val replyRepository: ReplyRepository,
+    private val likeRepository: LikeRepository,
     private val fileRepository: FileRepository
 ) {
 
@@ -36,6 +45,16 @@ class FeedService(
             FeedResponse(
                 content = feed.content,
                 createdAt = feed.createdAt,
+                comments = commentRepository.findByFeedId(feed.id)
+                    .map { CommentResponse(
+                        it.id,
+                        it.user.nickname,
+                        it.content,
+                        replyRepository.findByCommentId(it.id)
+                            .map { ReplyResponse(it.id, it.user.nickname, it.content) }
+                    ) },
+                likes = likeRepository.findByFeedId(feed.id)
+                    .map { LikeResponse(it.user.nickname) },
                 files = fileRepository.findByFeedId(feed.id)
                     .map { FileResponse(it.url) }
             )
@@ -49,6 +68,16 @@ class FeedService(
             FeedResponse(
                 content = feed.content,
                 createdAt = feed.createdAt,
+                comments = commentRepository.findByFeedId(feed.id)
+                    .map { CommentResponse(
+                        it.id,
+                        it.user.nickname,
+                        it.content,
+                        replyRepository.findByCommentId(it.id)
+                            .map { ReplyResponse(it.id, it.user.nickname, it.content) }
+                    ) },
+                likes = likeRepository.findByFeedId(feed.id)
+                    .map { LikeResponse(it.user.nickname) },
                 files = fileRepository.findByFeedId(feed.id)
                     .map { FileResponse(it.url) }
             )
