@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController("/follows")
@@ -14,12 +15,12 @@ class FollowController(
     private val followService: FollowService
 ) {
 
-    @PostMapping("/{id}")
+    @PostMapping
     fun save(
         @LoginUser userId: Long,
-        @PathVariable(value = "id") toUserId: Long
+        @RequestBody request: FollowSaveRequest
     ): ResponseEntity<Long> {
-        return ResponseEntity(followService.save(userId, toUserId), HttpStatus.CREATED)
+        return ResponseEntity(followService.save(userId, request), HttpStatus.CREATED)
     }
 
     @DeleteMapping("/{id}")
