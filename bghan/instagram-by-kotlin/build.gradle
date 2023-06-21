@@ -23,6 +23,19 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // 비밀번호 암호화 라이브러리 BCrypt 위함
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // bean validation
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.2.Final'
+    implementation 'org.glassfish:jakarta.el:3.0.3'
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
 }
 
 tasks.withType(KotlinCompile) {
