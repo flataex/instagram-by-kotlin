@@ -3,7 +3,6 @@ package com.flata.instagram.domain.feed.controller
 import com.flata.instagram.domain.feed.dto.FeedRequest
 import com.flata.instagram.domain.feed.dto.FeedResponse
 import com.flata.instagram.domain.feed.service.FeedService
-
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
