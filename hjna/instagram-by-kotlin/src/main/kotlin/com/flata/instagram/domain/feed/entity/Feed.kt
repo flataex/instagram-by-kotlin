@@ -16,5 +16,5 @@ data class Feed(
         val user: User,
 
         @Column(nullable = false)
-        val content: String
+        var content: String
 ): BaseEntity()
