@@ -1,4 +1,4 @@
-package com.flata.instagram.domain.feed.entity
+package com.flata.instagram.domain.feed.model.entity
 
 import com.flata.instagram.domain.user.model.entity.User
 import com.flata.instagram.global.entity.BaseEntity
@@ -16,5 +16,5 @@ data class Feed(
         val user: User,
 
         @Column(nullable = false)
-        var content: String
+        val content: String
 ): BaseEntity()

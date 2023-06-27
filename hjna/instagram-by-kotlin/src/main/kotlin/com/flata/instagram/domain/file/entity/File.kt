@@ -1,6 +1,6 @@
 package com.flata.instagram.domain.file.entity
 
-import com.flata.instagram.domain.feed.entity.Feed
+import com.flata.instagram.domain.feed.model.entity.Feed
 import com.flata.instagram.global.entity.BaseEntity
 import javax.persistence.*
 

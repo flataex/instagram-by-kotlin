@@ -19,8 +19,8 @@ class LikeService (
     @Transactional
     fun like(likeRequest: LikeRequest,
              userId: Long) {
-        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("유저가 존재하지 않습니다.") }
-        val feed = feedRepository.findById(likeRequest.feedId).orElseThrow { IllegalArgumentException("피드가 존재하지 않습니다.") }
+        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
+        val feed = feedRepository.findById(likeRequest.feedId).orElseThrow { IllegalArgumentException("Feed not found") }
 
         if (likeRepository.findByUserAndFeed(user, feed) != null) {
             throw IllegalArgumentException("Already liked")
@@ -32,16 +32,16 @@ class LikeService (
     @Transactional
     fun disableLike(likeRequest: LikeRequest,
                     userId: Long) {
-        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("유저가 존재하지 않습니다.") }
-        val feed = feedRepository.findById(likeRequest.feedId).orElseThrow { IllegalArgumentException("피드가 존재하지 않습니다.") }
-        val like = likeRepository.findByUserAndFeed(user, feed) ?: throw IllegalArgumentException("좋아요가 존재하지 않습니다.")
+        val user = userRepository.findById(userId).orElseThrow { IllegalArgumentException("User not found") }
+        val feed = feedRepository.findById(likeRequest.feedId).orElseThrow { IllegalArgumentException("Feed not found") }
+        val like = likeRepository.findByUserAndFeed(user, feed) ?: throw IllegalArgumentException("Like not found")
 
         likeRepository.delete(like)
     }
 
     @Transactional
     fun getLikeUsers(feedId: Long) : List<LikeResponse> {
-        val feed = feedRepository.findById(feedId).orElseThrow { IllegalArgumentException("피드가 존재하지 않습니다.") }
+        val feed = feedRepository.findById(feedId).orElseThrow { IllegalArgumentException("Feed not found") }
         val likes = likeRepository.findByFeed(feed)
 
         return likes.map { LikeResponse(it.user.email, it.user.nickname) }

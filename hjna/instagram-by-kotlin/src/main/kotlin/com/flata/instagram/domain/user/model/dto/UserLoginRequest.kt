@@ -1,4 +1,6 @@
 package com.flata.instagram.domain.user.model.dto
 
-class UserLoginRequest {
-}
+data class UserLoginRequest(
+    val email: String,
+    val password: String
+)

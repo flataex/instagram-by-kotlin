@@ -4,6 +4,9 @@ import com.flata.instagram.domain.comment.model.dto.CommentRequest
 import com.flata.instagram.domain.comment.model.dto.CommentResponse
 import com.flata.instagram.domain.comment.model.entity.Comment
 import com.flata.instagram.domain.comment.repository.CommentRepository
+import com.flata.instagram.domain.feed.model.dto.FeedRequest
+import com.flata.instagram.domain.feed.model.dto.FeedResponse
+import com.flata.instagram.domain.feed.model.entity.Feed
 import com.flata.instagram.domain.feed.repository.FeedRepository
 import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.utils.JwtProvider

@@ -1,6 +1,9 @@
 package com.flata.instagram.domain.like.controller
 
+import com.flata.instagram.domain.follow.model.dto.FollowRequest
 import com.flata.instagram.domain.follow.model.dto.FollowResponse
+import com.flata.instagram.domain.follow.model.dto.FollowerResponse
+import com.flata.instagram.domain.follow.service.FollowService
 import com.flata.instagram.domain.like.model.dto.LikeRequest
 import com.flata.instagram.domain.like.model.dto.LikeResponse
 import com.flata.instagram.domain.like.service.LikeService
