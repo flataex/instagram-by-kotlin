@@ -6,15 +6,17 @@ import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.NoDataException
 import com.flata.instagram.global.exception.NotUniqueColumnException
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.net.URI
 
 @Service
 class UserService(
     private val userRepository: UserRepository
 ) {
     @Transactional(readOnly = true)
-    fun getUsers(): List<UserResponse> =
+    fun getUsers(): ResponseEntity<List<UserResponse>> =
         userRepository.findAll()
             .map { users ->
                 UserResponse(
@@ -23,27 +25,34 @@ class UserService(
                     users.password,
                     users.nickname
                 )
+            }.let {
+                ResponseEntity.ok(it)
             }
 
     @Transactional(readOnly = true)
-    fun getUser(id: Long): UserResponse {
-        val user = userRepository.findByIdOrNull(id) ?: throw NoDataException()
-        return UserResponse(
-            user.id,
-            user.email,
-            user.password,
-            user.nickname
-        )
-    }
-
+    fun getUser(id: Long): ResponseEntity<UserResponse> =
+        userRepository.findByIdOrNull(id)?.let {
+            ResponseEntity.ok(
+                UserResponse(
+                    it.id,
+                    it.email,
+                    it.password,
+                    it.nickname
+                )
+            )
+        } ?: throw NoDataException()
 
     @Transactional
-    fun saveUser(userRequest: UserRequest): Long =
+    fun saveUser(userRequest: UserRequest): ResponseEntity<Unit> =
         run {
             validateEmail(userRequest.email)
             validateNickname(userRequest.nickname)
 
-            userRepository.save(userRequest.toEntity()).id
+            userRepository.save(userRequest.toEntity()).id.let {
+                ResponseEntity.created(
+                    URI.create("/users/".plus(it))
+                ).build()
+            }
         }
 
     private fun validateEmail(email: String) =
@@ -57,16 +66,20 @@ class UserService(
         }
 
     @Transactional
-    fun updateUser(userRequest: UserRequest) {
-        val user = userRepository.findByIdOrNull(userRequest.id) ?: throw NoDataException()
-        user.update(
-            userRequest.email,
-            userRequest.password,
-            userRequest.nickname
-        )
-    }
+    fun updateUser(userRequest: UserRequest): ResponseEntity<Unit> =
+        userRepository.findByIdOrNull(userRequest.id)?.let {
+            it.update(
+                userRequest.email,
+                userRequest.password,
+                userRequest.nickname
+            )
+            ResponseEntity.noContent().build()
+        } ?: throw NoDataException()
 
     @Transactional
-    fun deleteUser(userRequest: UserRequest) =
-        userRepository.deleteById(userRequest.id)
+    fun deleteUser(userRequest: UserRequest): ResponseEntity<Unit> =
+        userRepository.findByIdOrNull(userRequest.id)?.let {
+            userRepository.deleteById(it.id)
+            ResponseEntity.noContent().build()
+        } ?: throw NoDataException()
 }
