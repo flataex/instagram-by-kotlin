@@ -16,9 +16,11 @@ class Feed(
     @Column(columnDefinition = "text", nullable = false)
     @Comment("게시글")
     var content: String,
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="feed_id")
     var comments: List<com.flata.instagram.domain.comment.model.Comment>?,
-    @OneToMany(mappedBy = "like")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="like_id")
     var likes: List<Like>?
 ) : BaseEntity() {
     fun update(userId: Long, text: String) {

@@ -3,9 +3,11 @@ package com.flata.instagram.domain.follow.service
 import com.flata.instagram.domain.follow.dto.FollowRequest
 import com.flata.instagram.domain.follow.model.Follow
 import com.flata.instagram.domain.follow.repository.FollowRepository
+import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.LocalDateTime
@@ -13,10 +15,11 @@ import java.time.LocalDateTime
 @Service
 class FollowService(
     private val redisTemplate: RedisTemplate<String, String>,
-    private val followRepository: FollowRepository
+    private val followRepository: FollowRepository,
+    private val userRepository: UserRepository
 
 ) {
-    fun follow(followRequest: FollowRequest, userId: Long): Boolean {
+    fun follow(followRequest: FollowRequest, userId: Long): ResponseEntity<Unit> {
         val zSetOperations = redisTemplate.opsForZSet()
         zSetOperations.operations.multi()
 
@@ -34,15 +37,16 @@ class FollowService(
 
         followRepository.save(
             Follow(
-                0,
-                fromUserId = userId,
-                followRequest.toUserId
+                0L,
+                userRepository.findByIdOrNull(userId) ?: throw NoDataException(),
+                userRepository.findByIdOrNull(followRequest.toUserId) ?: throw NoDataException()
             )
         )
-        return true
+
+        return ResponseEntity.ok().build()
     }
 
-    fun unfollow(followRequest: FollowRequest, userId: Long): Boolean {
+    fun unfollow(followRequest: FollowRequest, userId: Long): ResponseEntity<Unit> {
         val zSetOperations = redisTemplate.opsForZSet()
         zSetOperations.operations.multi()
 
@@ -60,6 +64,6 @@ class FollowService(
 
         follow.delete()
 
-        return true
+        return ResponseEntity.ok().build()
     }
 }

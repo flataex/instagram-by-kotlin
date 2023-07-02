@@ -17,5 +17,6 @@ data class ReplyRequest(
             userId,
             commentId,
             content,
+            null
         )
 }

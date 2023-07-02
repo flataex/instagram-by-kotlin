@@ -20,6 +20,7 @@ data class UserRequest(
             this.id,
             this.email,
             BCrypt.hashpw(this.password, BCrypt.gensalt()),
-            this.nickname
+            this.nickname,
+            emptyList()
         )
 }

@@ -18,7 +18,8 @@ class Comment(
     @Column(columnDefinition = "text", nullable = false)
     @Comment("댓글")
     var content: String,
-    @OneToMany(mappedBy = "reply", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reply_id")
     var replies: List<Reply>?
 ) : BaseEntity() {
     fun update(content: String) {

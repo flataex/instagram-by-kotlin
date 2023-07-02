@@ -10,14 +10,12 @@ class Follow(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long,
-    @Column(name = "from_user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "from_user_id", nullable = false)
     @Comment("팔로우 하는 사람")
-    @OneToOne
-    @JoinColumn(name = "user_id")
     var fromUser: User,
-    @Column(name = "to_user_id", nullable = false)
-    @Comment("팔로우 당한 사람")
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "to_user_id", nullable = false)
+    @Comment("팔로우 당한 사람")
     var toUser: User
 ) : BaseEntity()
