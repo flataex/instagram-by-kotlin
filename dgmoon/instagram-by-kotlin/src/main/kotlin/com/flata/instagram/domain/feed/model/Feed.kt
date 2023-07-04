@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.feed.model
 
+import com.flata.instagram.domain.file.model.File
 import com.flata.instagram.domain.like.model.Like
 import com.flata.instagram.global.model.BaseEntity
 import org.hibernate.annotations.Comment
@@ -19,6 +20,9 @@ class Feed(
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="feed_id")
     var comments: List<com.flata.instagram.domain.comment.model.Comment>?,
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="file_id")
+    var files: List<File>?,
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="like_id")
     var likes: List<Like>?

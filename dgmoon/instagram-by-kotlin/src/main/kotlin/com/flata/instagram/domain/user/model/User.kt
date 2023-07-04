@@ -22,8 +22,8 @@ class User(
     @Comment("닉네임")
     var nickname: String,
     @OneToMany
-    @JoinColumn(name = "follow")
-    var follows: List<Follow>
+    @JoinColumn(name = "follow_id")
+    var follows: List<Follow>?
 ) : BaseEntity() {
     fun update(email: String, password: String, nickname: String) {
         this.email = email

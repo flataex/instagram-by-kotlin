@@ -17,5 +17,6 @@ data class FeedRequest(
             text,
             null,
             null,
+            null
         )
 }
