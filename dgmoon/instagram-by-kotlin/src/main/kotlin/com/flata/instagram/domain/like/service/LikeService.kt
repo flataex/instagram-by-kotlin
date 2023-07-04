@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
@@ -16,6 +17,7 @@ class LikeService(
     private val likeRepository: LikeRepository,
     private val redisTemplate: RedisTemplate<String, String>
 ) {
+    @Transactional
     fun like(likeRequest: LikeRequest, userId: Long): ResponseEntity<Unit> {
         try {
             redisTemplate.opsForZSet()
@@ -38,6 +40,7 @@ class LikeService(
         }
     }
 
+    @Transactional
     fun unlike(likeRequest: LikeRequest, userId: Long): ResponseEntity<Unit> {
         try {
             redisTemplate.opsForZSet()

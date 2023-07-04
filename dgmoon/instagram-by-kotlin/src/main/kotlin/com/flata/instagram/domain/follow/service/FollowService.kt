@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
@@ -19,6 +20,7 @@ class FollowService(
     private val userRepository: UserRepository
 
 ) {
+    @Transactional
     fun follow(followRequest: FollowRequest, userId: Long): ResponseEntity<Unit> {
         val zSetOperations = redisTemplate.opsForZSet()
         zSetOperations.operations.multi()
@@ -46,6 +48,7 @@ class FollowService(
         return ResponseEntity.ok().build()
     }
 
+    @Transactional
     fun unfollow(followRequest: FollowRequest, userId: Long): ResponseEntity<Unit> {
         val zSetOperations = redisTemplate.opsForZSet()
         zSetOperations.operations.multi()
