@@ -21,6 +21,6 @@ data class UserRequest(
             this.email,
             BCrypt.hashpw(this.password, BCrypt.gensalt()),
             this.nickname,
-            emptyList()
+            null
         )
 }

@@ -31,16 +31,17 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun getUser(id: Long): ResponseEntity<UserResponse> =
-        userRepository.findByIdOrNull(id)?.let {
-            ResponseEntity.ok(
-                UserResponse(
-                    it.id,
-                    it.email,
-                    it.password,
-                    it.nickname
+        userRepository.findByIdOrNull(id)
+            ?.let {
+                ResponseEntity.ok(
+                    UserResponse(
+                        it.id,
+                        it.email,
+                        it.password,
+                        it.nickname
+                    )
                 )
-            )
-        } ?: throw NoDataException()
+            } ?: throw NoDataException()
 
     @Transactional
     fun saveUser(userRequest: UserRequest): ResponseEntity<Unit> =
@@ -48,11 +49,13 @@ class UserService(
             validateEmail(userRequest.email)
             validateNickname(userRequest.nickname)
 
-            userRepository.save(userRequest.toEntity()).id.let {
-                ResponseEntity.created(
-                    URI.create("/users/".plus(it))
-                ).build()
-            }
+            ResponseEntity.created(
+                URI.create(
+                    "/user/".plus(
+                        userRepository.save(userRequest.toEntity()).id
+                    )
+                )
+            ).build()
         }
 
     private fun validateEmail(email: String) =
@@ -67,19 +70,21 @@ class UserService(
 
     @Transactional
     fun updateUser(userRequest: UserRequest): ResponseEntity<Unit> =
-        userRepository.findByIdOrNull(userRequest.id)?.let {
-            it.update(
-                userRequest.email,
-                userRequest.password,
-                userRequest.nickname
-            )
-            ResponseEntity.noContent().build()
-        } ?: throw NoDataException()
+        userRepository.findByIdOrNull(userRequest.id)
+            ?.let {
+                it.update(
+                    userRequest.email,
+                    userRequest.password,
+                    userRequest.nickname
+                )
+                ResponseEntity.noContent().build()
+            } ?: throw NoDataException()
 
     @Transactional
     fun deleteUser(userRequest: UserRequest): ResponseEntity<Unit> =
-        userRepository.findByIdOrNull(userRequest.id)?.let {
-            userRepository.deleteById(it.id)
-            ResponseEntity.noContent().build()
-        } ?: throw NoDataException()
+        userRepository.findByIdOrNull(userRequest.id)
+            ?.let {
+                userRepository.deleteById(it.id)
+                ResponseEntity.noContent().build()
+            } ?: throw NoDataException()
 }

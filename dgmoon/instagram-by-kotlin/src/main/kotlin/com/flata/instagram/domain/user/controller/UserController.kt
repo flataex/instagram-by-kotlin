@@ -25,14 +25,10 @@ class UserController(
         userService.saveUser(userRequest)
 
     @PutMapping
-    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> {
+    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
         userService.updateUser(userRequest)
-        return ResponseEntity.noContent().build()
-    }
 
     @DeleteMapping
-    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> {
+    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
         userService.deleteUser(userRequest)
-        return ResponseEntity.noContent().build()
-    }
 }
