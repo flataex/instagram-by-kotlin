@@ -20,8 +20,8 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 jwt:
-  secret: 1111111
-  expiration: 0
+  secret: ThisIsAVeryLongStringThatCanBeUsedAsASecretKeyForJWTThisIsAVeryLongStringThatCanBeUsedAsASecretKeyForJWT
+  expiration: 10000000
 
 upload:
   path: ./upload-files/
