@@ -22,7 +22,7 @@ class FeedService(
 
     @Transactional
     fun createFeed(jwt: String, feedRequest: FeedRequest): Feed {
-        val user = userRepository.findByEmail(jwtProvider.getEmailFromJwtToken(jwt)).orElseThrow { IllegalArgumentException("유효하지 않은 유저 정보입니다") }
+        val user = userRepository.findById(jwtProvider.getIdFromJwtToken(jwt)).orElseThrow { IllegalArgumentException("유효하지 않은 유저 정보입니다") }
         val feed = Feed(user = user, content = feedRequest.content)
         feedRepository.save(feed)
         if(feedRequest.images.isNotEmpty()){
@@ -31,9 +31,36 @@ class FeedService(
         return feed
     }
 
-    /*
-    fun findById(feedId: Long): ResponseEntity<FeedResponse> {
-        return feedRepository.findById(feedId).get();
+    @Transactional
+    fun getFeedById(feedId: Long): FeedResponse {
+        val feed = feedRepository.findById(feedId).orElseThrow { IllegalArgumentException("존재하지 않는 피드입니다.") }
+
+        return FeedResponse(feed)
     }
-    */
+
+    @Transactional
+    fun deleteFeed(jwt: String, feedId: Long) {
+        val user = userRepository.findById(jwtProvider.getIdFromJwtToken(jwt)).orElseThrow { IllegalArgumentException("유효하지 않은 유저 정보입니다") }
+        val feed = feedRepository.findById(feedId).orElseThrow { IllegalArgumentException("존재하지 않는 피드입니다.") }
+        if (feed.user != user) {
+            throw IllegalArgumentException("해당 유저는 이 피드를 삭제할 권한이 없습니다.")
+        }
+        feedRepository.delete(feed)
+    }
+
+    @Transactional
+    fun updateFeed(jwt: String, feedId: Long, feedUpdateRequest: FeedRequest): FeedResponse {
+        val user = userRepository.findById(jwtProvider.getIdFromJwtToken(jwt)).orElseThrow { IllegalArgumentException("유효하지 않은 유저 정보입니다") }
+        val feed = feedRepository.findById(feedId).orElseThrow { IllegalArgumentException("존재하지 않는 피드입니다.") }
+        if (feed.user != user) {
+            throw IllegalArgumentException("해당 유저는 이 피드를 수정할 권한이 없습니다.")
+        }
+        feed.content = feedUpdateRequest.content
+
+        if(feedUpdateRequest.images.isNotEmpty()){
+            fileService.saveFile(feedUpdateRequest.images, feed);
+        }
+        feedRepository.save(feed)
+        return FeedResponse(feed)
+    }
 }

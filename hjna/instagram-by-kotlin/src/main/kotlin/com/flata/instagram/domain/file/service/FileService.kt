@@ -1,7 +1,7 @@
 package com.flata.instagram.domain.file.service
 
 import com.flata.instagram.domain.feed.model.entity.Feed
-import com.flata.instagram.domain.file.entity.File
+import com.flata.instagram.domain.file.model.entity.File
 import com.flata.instagram.domain.file.repository.FileRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service

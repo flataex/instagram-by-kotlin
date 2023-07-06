@@ -31,4 +31,25 @@ class FeedController(private val feedService: FeedService) {
     ): ResponseEntity<FeedResponse> {
         return ResponseEntity(HttpStatus.OK)
     }
+
+    @DeleteMapping("/{feedId}")
+    fun deleteFeed(
+            @PathVariable(value = "feedId") feedId: Long,
+            session: HttpSession
+    ): ResponseEntity<Void> {
+        val jwt = session.getAttribute("USER_TOKEN").toString()
+        feedService.deleteFeed(jwt, feedId)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
+    }
+
+    @PutMapping("/{feedId}")
+    fun updateFeed(
+            @PathVariable(value = "feedId") feedId: Long,
+            @Valid @RequestBody feedUpdateRequest: FeedRequest,
+            session: HttpSession
+    ): ResponseEntity<FeedResponse> {
+        val jwt = session.getAttribute("USER_TOKEN").toString()
+        val feedResponse = feedService.updateFeed(jwt, feedId, feedUpdateRequest)
+        return ResponseEntity(feedResponse, HttpStatus.OK)
+    }
 }

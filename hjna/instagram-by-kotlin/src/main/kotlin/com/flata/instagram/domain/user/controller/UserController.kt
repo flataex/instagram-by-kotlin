@@ -29,7 +29,7 @@ class UserController(private val userService: UserService,
     fun login(@RequestBody loginRequest: UserLoginRequest, session: HttpSession): ResponseEntity<Any> {
         return try {
             val user = userService.login(loginRequest)
-            val jwt = jwtProvider.generateJwtToken(user.email)
+            val jwt = user.id?.let { jwtProvider.generateJwtToken(it) }
             session.setAttribute("USER_TOKEN", jwt)
             ResponseEntity.ok().body(user.id)
         } catch (e: IllegalArgumentException) {

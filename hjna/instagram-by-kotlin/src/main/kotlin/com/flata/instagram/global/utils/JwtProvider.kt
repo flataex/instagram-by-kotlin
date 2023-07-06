@@ -15,9 +15,9 @@ class JwtProvider {
     @Value("\${jwt.expiration}")
     private val jwtExpiration: Long = 0
 
-    fun generateJwtToken(email: String): String {
+    fun generateJwtToken(userId: Long): String {
         return Jwts.builder()
-            .setSubject(email)
+            .setSubject(userId.toString())
             .setIssuedAt(Date())
             .setExpiration(Date(Date().time + jwtExpiration))
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -25,7 +25,7 @@ class JwtProvider {
     }
 
 
-    fun getEmailFromJwtToken(jwt: String): String {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).body.subject
+    fun getIdFromJwtToken(jwt: String): Long {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).body.subject.toLong()
     }
 }
