@@ -20,7 +20,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 jwt:
-  secret: 0
+  secret: 1111111
   expiration: 0
 
 upload:
