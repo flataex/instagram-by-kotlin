@@ -14,7 +14,7 @@ data class FeedResponse (
         feedId = feed?.id ?: throw IllegalArgumentException("Feed cannot be null"),
         content = feed.content,
         userId = feed.user.id,
-        fileName = listOf(), // This should be replaced with appropriate logic
+        fileName = listOf(),
         createdAt = feed.createdAt
     )
 }

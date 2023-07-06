@@ -41,4 +41,8 @@ class FileService(private val fileRepository: FileRepository) {
             fileRepository.save(fileEntity)
         }
     }
+
+    fun getFilesByFeed(feed: Feed): List<String> {
+        return fileRepository.findAllByFeed(feed).map { it.url }
+    }
 }

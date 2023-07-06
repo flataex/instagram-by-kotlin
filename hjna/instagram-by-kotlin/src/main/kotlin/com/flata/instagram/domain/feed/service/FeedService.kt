@@ -35,7 +35,15 @@ class FeedService(
     fun getFeedById(feedId: Long): FeedResponse {
         val feed = feedRepository.findById(feedId).orElseThrow { IllegalArgumentException("존재하지 않는 피드입니다.") }
 
-        return FeedResponse(feed)
+        val fileNames = fileService.getFilesByFeed(feed)
+
+        return FeedResponse(
+            feedId = feed.id ?: throw IllegalArgumentException(),
+            content = feed.content,
+            userId = feed.user.id,
+            fileName = fileNames,
+            createdAt = feed.createdAt
+        )
     }
 
     @Transactional
