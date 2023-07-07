@@ -12,10 +12,6 @@ import javax.validation.Valid
 class UserController(
     private val userService: UserService
 ) {
-    @GetMapping
-    fun getUsers(): ResponseEntity<List<UserResponse>> =
-        userService.getUsers()
-
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> =
         userService.getUser(id)

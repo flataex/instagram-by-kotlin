@@ -10,28 +10,19 @@ import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 @RestController
+@RequestMapping("/files")
 class FileController(
     private val fileService: FileService
 ) {
-    @GetMapping
-    fun getFiles(): ResponseEntity<List<FileResponse>> =
-        ResponseEntity.ok(fileService.getFiles())
-
     @GetMapping("/{id}")
     fun getFiles(@PathVariable id: Long): ResponseEntity<FileResponse> =
-        ResponseEntity.ok(fileService.getFile(id))
+        fileService.getFile(id)
 
     @PostMapping
     fun saveFile(@Valid @RequestBody fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Unit> =
-        ResponseEntity.created(
-            fileService.saveFile(fileRequest, request).let {
-                URI.create("/files/".plus(it))
-            }
-        ).build()
+        fileService.saveFile(fileRequest, request)
 
     @DeleteMapping
-    fun deleteFile(@Valid @RequestBody fileRequest: FileRequest): ResponseEntity<Unit> {
+    fun deleteFile(@Valid @RequestBody fileRequest: FileRequest): ResponseEntity<Unit> =
         fileService.deleteFile(fileRequest)
-        return ResponseEntity.noContent().build()
-    }
 }
