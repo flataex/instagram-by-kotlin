@@ -1,6 +1,7 @@
 package com.flata.instagram.domain.follow.controller
 
 import com.flata.instagram.domain.follow.dto.FollowRequest
+import com.flata.instagram.domain.follow.dto.FollowResponse
 import com.flata.instagram.domain.follow.service.FollowService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,7 +17,7 @@ class FollowController(
     fun follow(
         @Valid @RequestBody followRequest: FollowRequest,
         httpSession: HttpSession
-    ): ResponseEntity<Unit> =
+    ): ResponseEntity<FollowResponse> =
         followService.follow(followRequest, httpSession.getAttribute("userId") as Long)
 
     @DeleteMapping
