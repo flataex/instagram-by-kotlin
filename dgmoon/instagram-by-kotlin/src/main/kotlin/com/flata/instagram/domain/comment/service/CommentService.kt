@@ -6,23 +6,13 @@ import com.flata.instagram.domain.comment.repository.CommentRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CommentService(
     private val commentRepository: CommentRepository
 ) {
-    fun getComments(): List<CommentResponse> =
-        commentRepository.findAll()
-            .map {
-                CommentResponse(
-                    it.id,
-                    it.feedId,
-                    it.userId,
-                    it.content,
-                    it.replies ?: mutableListOf()
-                )
-            }
-
+    @Transactional(readOnly = true)
     fun getComment(id: Long): CommentResponse {
         val comment = commentRepository.findByIdOrNull(id) ?: throw NoDataException()
 
@@ -35,15 +25,18 @@ class CommentService(
         )
     }
 
+    @Transactional
     fun saveComment(commentRequest: CommentRequest) =
         commentRepository.save(commentRequest.toEntity())
 
+    @Transactional
     fun updateComment(commentRequest: CommentRequest) {
         val comment = commentRepository.findByIdOrNull(commentRequest.id) ?: throw NoDataException()
 
         return comment.update(commentRequest.content)
     }
 
+    @Transactional
     fun deleteComment(commentRequest: CommentRequest) {
         val comment = commentRepository.findByIdOrNull(commentRequest.id) ?: throw NoDataException()
         comment.delete()
