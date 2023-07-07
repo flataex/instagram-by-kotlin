@@ -21,14 +21,10 @@ class ReplyController(
         ).build()
 
     @PutMapping
-    fun updateReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> {
+    fun updateReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> =
         replyService.updateReply(replyRequest)
-        return ResponseEntity.noContent().build()
-    }
 
     @DeleteMapping
-    fun deleteReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> {
+    fun deleteReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> =
         replyService.deleteReply(replyRequest)
-        return ResponseEntity.noContent().build()
-    }
 }
