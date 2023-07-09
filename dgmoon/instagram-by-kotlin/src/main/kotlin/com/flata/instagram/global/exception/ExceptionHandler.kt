@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(NoDataException::class)
-    fun handleNoDataException(): ResponseEntity<Any> =
+    fun handleNoDataException(): ResponseEntity<Unit> =
         ResponseEntity.noContent().build()
 
     @ExceptionHandler(NotUniqueColumnException::class)
-    fun handleNotUniqueColumnException(): ResponseEntity<Any> =
+    fun handleNotUniqueColumnException(): ResponseEntity<Unit> =
         ResponseEntity(HttpStatus.CONFLICT)
+
+    @ExceptionHandler(InvalidLoginInfoException::class)
+    fun handleInvalidLoginInfoException(): ResponseEntity<Unit> =
+        ResponseEntity(HttpStatus.UNAUTHORIZED)
 }
