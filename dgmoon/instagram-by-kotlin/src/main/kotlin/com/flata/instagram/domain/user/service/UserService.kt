@@ -14,6 +14,18 @@ class UserService(
     private val userRepository: UserRepository
 ) {
     @Transactional(readOnly = true)
+    fun getUsers(): List<UserResponse> =
+        userRepository.findAll()
+            .map {
+                UserResponse(
+                    id = it.id,
+                    email = it.email,
+                    password = it.password,
+                    nickname = it.nickname
+                )
+            }
+
+    @Transactional(readOnly = true)
     fun getUser(id: Long): UserResponse =
         userRepository.findByIdOrNull(id)
             ?.let {
