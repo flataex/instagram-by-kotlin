@@ -14,8 +14,14 @@ import javax.validation.Valid
 class FileController(
     private val fileService: FileService
 ) {
+    @GetMapping
+    fun getFiles(): ResponseEntity<List<FileResponse>> =
+        ResponseEntity.ok(
+            fileService.getFiles()
+        )
+
     @GetMapping("/{id}")
-    fun getFiles(@PathVariable id: Long): ResponseEntity<FileResponse> =
+    fun getFile(@PathVariable id: Long): ResponseEntity<FileResponse> =
         ResponseEntity.ok(
             fileService.getFile(id)
         )

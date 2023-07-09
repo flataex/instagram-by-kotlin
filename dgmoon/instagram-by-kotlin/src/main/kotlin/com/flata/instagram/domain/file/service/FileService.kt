@@ -16,6 +16,20 @@ class FileService(
     private val fileRepository: FileRepository,
 ) {
     @Transactional(readOnly = true)
+    fun getFiles(): List<FileResponse> =
+        fileRepository.findAll()
+            .filter {
+                it.deletedAt == null
+            }
+            .map {
+                FileResponse(
+                    it.id,
+                    it.url,
+                    it.feedId
+                )
+            }.toList()
+
+    @Transactional(readOnly = true)
     fun getFile(id: Long): FileResponse =
         fileRepository.findByIdOrNull(id)
             ?.let {
