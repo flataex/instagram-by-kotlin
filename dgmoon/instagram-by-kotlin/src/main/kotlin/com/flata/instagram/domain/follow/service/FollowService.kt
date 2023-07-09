@@ -22,7 +22,7 @@ class FollowService(
 
 ) {
     @Transactional
-    fun follow(followRequest: FollowRequest, userId: Long): ResponseEntity<FollowResponse> =
+    fun follow(followRequest: FollowRequest, userId: Long): FollowResponse =
         runCatching {
             val zSetOperations = redisTemplate.opsForZSet()
             zSetOperations.operations.multi()
@@ -46,18 +46,16 @@ class FollowService(
                         userRepository.findByIdOrNull(followRequest.toUserId) ?: throw NoDataException()
                     )
                 ).let {
-                    ResponseEntity.ok(
                         FollowResponse(
                             true
                         )
-                    )
                 }
         }.onFailure {
             throw Exception()
         }.getOrThrow()
 
     @Transactional
-    fun unfollow(followRequest: FollowRequest, userId: Long): ResponseEntity<Unit> =
+    fun unfollow(followRequest: FollowRequest, userId: Long) =
         runCatching {
             val zSetOperations = redisTemplate.opsForZSet()
             zSetOperations.operations.multi()
@@ -73,10 +71,7 @@ class FollowService(
             )
 
             followRepository.findByIdOrNull(followRequest.id)
-                ?.let {
-                    it.delete()
-                    ResponseEntity.noContent().build<Unit>()
-                }
+                ?.delete()
                 ?: throw NoDataException()
         }.onFailure {
             throw Exception()

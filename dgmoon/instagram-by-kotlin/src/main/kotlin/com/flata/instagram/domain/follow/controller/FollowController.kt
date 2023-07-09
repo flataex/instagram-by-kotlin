@@ -18,12 +18,16 @@ class FollowController(
         @Valid @RequestBody followRequest: FollowRequest,
         httpSession: HttpSession
     ): ResponseEntity<FollowResponse> =
-        followService.follow(followRequest, httpSession.getAttribute("userId") as Long)
+        ResponseEntity.ok(
+            followService.follow(followRequest, httpSession.getAttribute("userId") as Long)
+        )
 
     @DeleteMapping
     fun unfollow(
         @Valid @RequestBody followRequest: FollowRequest,
         httpSession: HttpSession
     ): ResponseEntity<Unit> =
-        followService.unfollow(followRequest, httpSession.getAttribute("userId") as Long)
+        ResponseEntity.ok(
+            followService.unfollow(followRequest, httpSession.getAttribute("userId") as Long)
+        )
 }

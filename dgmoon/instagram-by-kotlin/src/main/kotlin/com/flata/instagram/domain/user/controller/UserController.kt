@@ -5,6 +5,7 @@ import com.flata.instagram.domain.user.dto.UserResponse
 import com.flata.instagram.domain.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 import javax.validation.Valid
 
 @RestController
@@ -14,17 +15,30 @@ class UserController(
 ) {
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> =
-        userService.getUser(id)
+        ResponseEntity.ok(
+            userService.getUser(id)
+        )
 
     @PostMapping
     fun saveUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
         userService.saveUser(userRequest)
+            .let {
+                ResponseEntity.created(
+                    URI.create("/user/$it")
+                ).build()
+            }
 
     @PutMapping
     fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
-        userService.updateUser(userRequest)
+        run {
+            userService.updateUser(userRequest)
+            ResponseEntity.noContent().build()
+        }
 
     @DeleteMapping
     fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
-        userService.deleteUser(userRequest)
+        run {
+            userService.deleteUser(userRequest)
+            ResponseEntity.noContent().build()
+        }
 }

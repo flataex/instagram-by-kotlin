@@ -17,20 +17,12 @@ class ReplyService(
         replyRepository.save(replyRequest.toEntity())
 
     @Transactional
-    fun updateReply(replyRequest: ReplyRequest): ResponseEntity<Unit> =
-        replyRepository.findByIdOrNull(replyRequest.id)
-            ?.let {
-                it.update(replyRequest.content)
-                ResponseEntity.noContent().build()
-            }
+    fun updateReply(replyRequest: ReplyRequest)=
+        replyRepository.findByIdOrNull(replyRequest.id)?.update(replyRequest.content)
             ?: throw NoDataException()
 
     @Transactional
-    fun deleteReply(replyRequest: ReplyRequest): ResponseEntity<Unit> =
-        replyRepository.findByIdOrNull(replyRequest.id)
-            ?.let {
-                it.delete()
-                ResponseEntity.noContent().build()
-            }
+    fun deleteReply(replyRequest: ReplyRequest) =
+        replyRepository.findByIdOrNull(replyRequest.id)?.delete()
             ?: throw NoDataException()
 }

@@ -10,5 +10,5 @@ data class FileRequest(
     @field:NotNull
     val feedId: Long,
     @field:NotNull
-    val file: MultipartFile?
+    val file: MultipartFile
 )

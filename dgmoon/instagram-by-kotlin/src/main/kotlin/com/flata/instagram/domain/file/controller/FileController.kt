@@ -16,13 +16,25 @@ class FileController(
 ) {
     @GetMapping("/{id}")
     fun getFiles(@PathVariable id: Long): ResponseEntity<FileResponse> =
-        fileService.getFile(id)
+        ResponseEntity.ok(
+            fileService.getFile(id)
+        )
 
     @PostMapping
     fun saveFile(@Valid @RequestBody fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Unit> =
         fileService.saveFile(fileRequest, request)
+            .let {
+                ResponseEntity.created(
+                    URI.create(
+                        "/files/$it"
+                    )
+                ).build()
+            }
 
     @DeleteMapping
     fun deleteFile(@Valid @RequestBody fileRequest: FileRequest): ResponseEntity<Unit> =
-        fileService.deleteFile(fileRequest)
+        run {
+            fileService.deleteFile(fileRequest)
+            ResponseEntity.noContent().build()
+        }
 }

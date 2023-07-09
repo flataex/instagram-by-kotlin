@@ -6,42 +6,31 @@ import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.NoDataException
 import com.flata.instagram.global.exception.NotUniqueColumnException
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.net.URI
 
 @Service
 class UserService(
     private val userRepository: UserRepository
 ) {
     @Transactional(readOnly = true)
-    fun getUser(id: Long): ResponseEntity<UserResponse> =
+    fun getUser(id: Long): UserResponse =
         userRepository.findByIdOrNull(id)
             ?.let {
-                ResponseEntity.ok(
-                    UserResponse(
-                        it.id,
-                        it.email,
-                        it.password,
-                        it.nickname
-                    )
+                UserResponse(
+                    it.id,
+                    it.email,
+                    it.password,
+                    it.nickname
                 )
             } ?: throw NoDataException()
 
     @Transactional
-    fun saveUser(userRequest: UserRequest): ResponseEntity<Unit> =
+    fun saveUser(userRequest: UserRequest): Long =
         run {
             validateEmail(userRequest.email)
             validateNickname(userRequest.nickname)
-
-            ResponseEntity.created(
-                URI.create(
-                    "/user/".plus(
-                        userRepository.save(userRequest.toEntity()).id
-                    )
-                )
-            ).build()
+            userRepository.save(userRequest.toEntity()).id
         }
 
     private fun validateEmail(email: String) =
@@ -55,7 +44,7 @@ class UserService(
         }
 
     @Transactional
-    fun updateUser(userRequest: UserRequest): ResponseEntity<Unit> =
+    fun updateUser(userRequest: UserRequest) =
         userRepository.findByIdOrNull(userRequest.id)
             ?.let {
                 it.update(
@@ -63,14 +52,12 @@ class UserService(
                     userRequest.password,
                     userRequest.nickname
                 )
-                ResponseEntity.noContent().build()
             } ?: throw NoDataException()
 
     @Transactional
-    fun deleteUser(userRequest: UserRequest): ResponseEntity<Unit> =
+    fun deleteUser(userRequest: UserRequest) =
         userRepository.findByIdOrNull(userRequest.id)
             ?.let {
                 userRepository.deleteById(it.id)
-                ResponseEntity.noContent().build()
             } ?: throw NoDataException()
 }

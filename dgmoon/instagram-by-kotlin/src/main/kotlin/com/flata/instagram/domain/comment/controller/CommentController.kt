@@ -5,6 +5,7 @@ import com.flata.instagram.domain.comment.dto.CommentResponse
 import com.flata.instagram.domain.comment.service.CommentService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 import javax.validation.Valid
 
 @RestController
@@ -14,17 +15,30 @@ class CommentController(
 ) {
     @GetMapping("/{id}")
     fun getComment(@PathVariable id: Long): ResponseEntity<CommentResponse> =
-        commentService.getComment(id)
+        ResponseEntity.ok(
+            commentService.getComment(id)
+        )
 
     @PostMapping
     fun saveComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> =
         commentService.saveComment(commentRequest)
+            .let {
+                ResponseEntity.created(
+                    URI.create("/comments$it")
+                ).build()
+            }
 
     @PutMapping
     fun updateComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> =
-        commentService.updateComment(commentRequest)
+        run {
+            commentService.updateComment(commentRequest)
+            ResponseEntity.noContent().build()
+        }
 
     @DeleteMapping
     fun deleteComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> =
-        commentService.deleteComment(commentRequest)
+        run {
+            commentService.deleteComment(commentRequest)
+            ResponseEntity.noContent().build()
+        }
 }

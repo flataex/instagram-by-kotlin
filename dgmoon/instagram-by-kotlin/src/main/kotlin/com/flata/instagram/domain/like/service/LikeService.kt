@@ -7,7 +7,6 @@ import com.flata.instagram.domain.like.repository.LikeRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
@@ -19,7 +18,7 @@ class LikeService(
     private val redisTemplate: RedisTemplate<String, String>
 ) {
     @Transactional
-    fun like(likeRequest: LikeRequest, userId: Long): ResponseEntity<LikeResponse> =
+    fun like(likeRequest: LikeRequest, userId: Long): LikeResponse =
         runCatching {
             redisTemplate.opsForZSet()
                 .add(
@@ -35,15 +34,13 @@ class LikeService(
                     likeRequest.feedId
                 )
             )
-            ResponseEntity.ok(
-                LikeResponse(true)
-            )
+            LikeResponse(true)
         }.onFailure {
             throw Exception()
         }.getOrThrow()
 
     @Transactional
-    fun unlike(likeRequest: LikeRequest, userId: Long): ResponseEntity<LikeResponse> =
+    fun unlike(likeRequest: LikeRequest, userId: Long): LikeResponse =
         runCatching {
             redisTemplate.opsForZSet()
                 .remove(
@@ -55,10 +52,8 @@ class LikeService(
 
             like.delete()
 
-            ResponseEntity.ok(
-                LikeResponse(
-                    true
-                )
+            LikeResponse(
+                true
             )
         }.onFailure {
             throw Exception()

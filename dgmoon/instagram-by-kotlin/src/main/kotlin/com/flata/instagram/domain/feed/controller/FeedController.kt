@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 import javax.validation.Valid
 
 @RestController
@@ -24,17 +25,30 @@ class FeedController(
             direction = Sort.Direction.DESC
         ) pageable: Pageable
     ): ResponseEntity<List<FeedResponse>> =
-        feedService.getFeeds(pageable)
+        ResponseEntity.ok(
+            feedService.getFeeds(pageable)
+        )
 
     @GetMapping("/{id}")
     fun getFeed(@PathVariable id: Long): ResponseEntity<FeedResponse> =
-        feedService.getFeed(id)
+        ResponseEntity.ok(
+            feedService.getFeed(id)
+        )
 
     @PostMapping
     fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
-        feedService.saveFeed(feedRequest)
+        feedService.saveFeed(feedRequest).let {
+            ResponseEntity.created(
+                URI.create(
+                    "/feeds/$it"
+                )
+            ).build()
+        }
 
     @DeleteMapping
     fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
-        feedService.deleteFeed(feedRequest)
+        run {
+            feedService.deleteFeed(feedRequest)
+            ResponseEntity.noContent().build()
+        }
 }

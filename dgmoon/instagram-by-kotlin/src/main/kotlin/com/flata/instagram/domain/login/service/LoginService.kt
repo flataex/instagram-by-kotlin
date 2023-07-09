@@ -11,17 +11,19 @@ import javax.servlet.http.HttpSession
 class LoginService(
     private val userRepository: UserRepository
 ) {
-    fun login(loginRequest: LoginRequest, session: HttpSession): Long? {
-        val user = userRepository.findByEmail(loginRequest.email) ?: throw InvalidLoginInfoException()
-        session.setAttribute("userId", user.id)
-        return user.id.takeIf {
-            BCrypt.checkpw(
-                userRepository.findByEmail(loginRequest.email)!!
-                    .password,
-                loginRequest.password
-            )
-        }
-    }
+    fun login(loginRequest: LoginRequest, session: HttpSession): Long =
+        userRepository.findByEmail(loginRequest.email)
+            ?.let {
+                session.setAttribute("userId", it.id)
+                it.id.takeIf {
+                    BCrypt.checkpw(
+                        userRepository.findByEmail(loginRequest.email)!!
+                            .password,
+                        loginRequest.password
+                    )
+                }
+            }
+            ?: throw InvalidLoginInfoException()
 
     fun logout(session: HttpSession) =
         session.invalidate()

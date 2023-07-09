@@ -6,10 +6,8 @@ import com.flata.instagram.domain.file.model.File
 import com.flata.instagram.domain.file.repository.FileRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.net.URI
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 
@@ -18,59 +16,38 @@ class FileService(
     private val fileRepository: FileRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getFile(id: Long): ResponseEntity<FileResponse> =
+    fun getFile(id: Long): FileResponse =
         fileRepository.findByIdOrNull(id)
             ?.let {
-                ResponseEntity.ok(
-                    FileResponse(
-                        it.id,
-                        it.url,
-                        it.feedId
-                    )
+                FileResponse(
+                    it.id,
+                    it.url,
+                    it.feedId
                 )
             }
             ?: throw NoDataException()
 
     @Transactional
-    fun saveFile(fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Unit> {
-        val realPath = request.servletContext.getRealPath("/")
-        val fileName = UUID.randomUUID().toString()
-            .plus(".")
-            .plus(
-                fileRequest.file?.originalFilename?.split(".")?.get(1)
+    fun saveFile(fileRequest: FileRequest, request: HttpServletRequest): Long =
+        run {
+            val fileName = "${UUID.randomUUID()}.${fileRequest.file.name.split(".")[1]}"
+            fileRequest.file.transferTo(
+                java.io.File("${request.servletContext.getRealPath("/")}$fileName")
             )
-        val filePath = realPath.plus(
-            "/".plus(
-                fileName
-            )
-        )
 
-        fileRequest.file?.transferTo(
-            java.io.File(filePath)
-        )
-
-        return ResponseEntity.created(
-            URI.create(
-                "/files/".plus(
-                    fileRepository.save(
-                        File(
-                            0,
-                            "/".plus(fileName),
-                            fileRequest.feedId
-                        )
-                    ).id
+            fileRepository.save(
+                File(
+                    0,
+                    "/".plus(fileName),
+                    fileRequest.feedId
                 )
-            )
-        ).build()
-    }
+            ).id
+        }
 
     @Transactional
-    fun deleteFile(fileRequest: FileRequest): ResponseEntity<Unit> =
+    fun deleteFile(fileRequest: FileRequest) =
         fileRepository.findByIdOrNull(fileRequest.id)
-            ?.let {
-                it.delete()
-                ResponseEntity.noContent().build()
-            }
+            ?.delete()
             ?: throw NoDataException()
 
 }

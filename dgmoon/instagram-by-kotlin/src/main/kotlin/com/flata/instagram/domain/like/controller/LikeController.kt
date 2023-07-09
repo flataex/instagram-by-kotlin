@@ -15,9 +15,13 @@ class LikeController(
 ) {
     @PostMapping
     fun like(@Valid @RequestBody likeRequest: LikeRequest, httpSession: HttpSession): ResponseEntity<LikeResponse> =
-        likeService.like(likeRequest, httpSession.getAttribute("userId") as Long)
+        ResponseEntity.ok(
+            likeService.like(likeRequest, httpSession.getAttribute("userId") as Long)
+        )
 
     @DeleteMapping
     fun unlike(@Valid @RequestBody likeRequest: LikeRequest, httpSession: HttpSession): ResponseEntity<LikeResponse> =
-        likeService.unlike(likeRequest, httpSession.getAttribute("userId") as Long)
+        ResponseEntity.ok(
+            likeService.unlike(likeRequest, httpSession.getAttribute("userId") as Long)
+        )
 }
