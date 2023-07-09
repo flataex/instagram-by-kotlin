@@ -23,13 +23,13 @@ class FeedService(
             .filter {
                 it.deletedAt == null
             }
-            .map { feed ->
+            .map { it ->
                 FeedResponse(
-                    feed.id,
-                    feed.userId,
-                    feed.content,
-                    feed.comments ?: mutableListOf(),
-                    feed.likes?.size?.toLong() ?: 0
+                    it.id,
+                    it.userId,
+                    it.content,
+                    it.comments ?: mutableListOf(),
+                    it.likes?.size?.toLong() ?: 0
                 )
             }.toList()
 
