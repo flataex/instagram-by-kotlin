@@ -18,9 +18,9 @@ class LoginService(
                 session.setAttribute("userId", it.id)
                 it.id.takeIf {
                     encoder.matches(
+                        loginRequest.password,
                         userRepository.findByEmail(loginRequest.email)!!
-                            .password,
-                        loginRequest.password
+                            .password
                     )
                 }
             }
