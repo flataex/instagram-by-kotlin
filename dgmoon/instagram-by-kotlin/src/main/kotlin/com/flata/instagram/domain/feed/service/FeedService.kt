@@ -9,6 +9,8 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestBody
+import javax.validation.Valid
 
 @Service
 class FeedService(
@@ -18,6 +20,9 @@ class FeedService(
     @Transactional(readOnly = true)
     fun getFeeds(pageable: Pageable): List<FeedResponse> =
         feedRepository.findAll(pageable)
+            .filter {
+                it.deletedAt == null
+            }
             .map { feed ->
                 FeedResponse(
                     feed.id,
@@ -50,11 +55,14 @@ class FeedService(
             ?: 0
 
     @Transactional
-    fun saveFeed(feedRequest: FeedRequest): Long =
-        feedRepository.save(feedRequest.toEntity()).id
+    fun saveFeed(
+        @Valid @RequestBody feedRequest: FeedRequest,
+        userId: Long
+    ): Long =
+        feedRepository.save(feedRequest.toEntityWith(userId)).id
 
     @Transactional
-    fun deleteFeed(feedRequest: FeedRequest) =
+    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest) =
         feedRepository.findByIdOrNull(feedRequest.id)
             ?.delete()
             ?: throw NoDataException()

@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 @RestController
@@ -20,7 +21,7 @@ class FeedController(
     fun getFeeds(
         @PageableDefault(
             size = 10,
-            page = 1,
+            page = 0,
             sort = ["id"],
             direction = Sort.Direction.DESC
         ) pageable: Pageable
@@ -36,8 +37,8 @@ class FeedController(
         )
 
     @PostMapping
-    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
-        feedService.saveFeed(feedRequest).let {
+    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest, session: HttpSession): ResponseEntity<Unit> =
+        feedService.saveFeed(feedRequest, session.getAttribute("userId") as Long).let {
             ResponseEntity.created(
                 URI.create(
                     "/feeds/$it"

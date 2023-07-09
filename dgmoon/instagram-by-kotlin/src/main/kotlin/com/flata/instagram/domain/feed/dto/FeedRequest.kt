@@ -6,11 +6,9 @@ import org.jetbrains.annotations.NotNull
 data class FeedRequest(
     val id: Long,
     @field:NotNull
-    val userId: Long,
-    @field:NotNull
     val text: String
 ) {
-    fun toEntity(): Feed =
+    fun toEntityWith(userId: Long): Feed =
         Feed(
             id,
             userId,
