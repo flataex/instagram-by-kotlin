@@ -44,9 +44,9 @@ class FileService(
     @Transactional
     fun saveFile(fileRequest: FileRequest, request: HttpServletRequest): Long =
         run {
-            val fileName = "${UUID.randomUUID()}.${fileRequest.file.name.split(".")[1]}"
+            val fileName = "${UUID.randomUUID()}.${fileRequest.file.originalFilename?.split(".")?.get(1)}"
             fileRequest.file.transferTo(
-                java.io.File("${request.servletContext.getRealPath("/")}$fileName")
+                java.io.File("${request.servletContext.getRealPath("/")}/$fileName")
             )
 
             fileRepository.save(
@@ -59,8 +59,8 @@ class FileService(
         }
 
     @Transactional
-    fun deleteFile(fileRequest: FileRequest) =
-        fileRepository.findByIdOrNull(fileRequest.id)
+    fun deleteFile(fileId: Long) =
+        fileRepository.findByIdOrNull(fileId)
             ?.delete()
             ?: throw NoDataException()
 

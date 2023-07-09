@@ -27,7 +27,7 @@ class FileController(
         )
 
     @PostMapping
-    fun saveFile(@Valid @RequestBody fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Unit> =
+    fun saveFile(@Valid fileRequest: FileRequest, request: HttpServletRequest): ResponseEntity<Unit> =
         fileService.saveFile(fileRequest, request)
             .let {
                 ResponseEntity.created(
@@ -38,9 +38,9 @@ class FileController(
             }
 
     @DeleteMapping
-    fun deleteFile(@Valid @RequestBody fileRequest: FileRequest): ResponseEntity<Unit> =
+    fun deleteFile(fileId: Long): ResponseEntity<Unit> =
         run {
-            fileService.deleteFile(fileRequest)
+            fileService.deleteFile(fileId)
             ResponseEntity.noContent().build()
         }
 }
