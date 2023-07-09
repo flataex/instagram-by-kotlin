@@ -30,10 +30,10 @@ class UserService(
         userRepository.findByIdOrNull(id)
             ?.let {
                 UserResponse(
-                    it.id,
-                    it.email,
-                    it.password,
-                    it.nickname
+                    id = it.id,
+                    email = it.email,
+                    password = it.password,
+                    nickname = it.nickname
                 )
             } ?: throw NoDataException()
 
@@ -57,14 +57,11 @@ class UserService(
 
     @Transactional
     fun updateUser(userRequest: UserRequest) =
-        userRepository.findByIdOrNull(userRequest.id)
-            ?.let {
-                it.update(
-                    userRequest.email,
-                    userRequest.password,
-                    userRequest.nickname
-                )
-            } ?: throw NoDataException()
+        userRepository.findByIdOrNull(userRequest.id)?.update(
+            userRequest.email,
+            userRequest.password,
+            userRequest.nickname
+        ) ?: throw NoDataException()
 
     @Transactional
     fun deleteUser(userRequest: UserRequest) =
