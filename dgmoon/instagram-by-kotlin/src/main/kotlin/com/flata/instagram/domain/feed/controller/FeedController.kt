@@ -38,13 +38,12 @@ class FeedController(
 
     @PostMapping
     fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest, session: HttpSession): ResponseEntity<Unit> =
-        feedService.saveFeed(feedRequest, session.getAttribute("userId") as Long).let {
-            ResponseEntity.created(
-                URI.create(
-                    "/feeds/$it"
-                )
-            ).build()
-        }
+        feedService.saveFeed(feedRequest, session.getAttribute("userId") as Long)
+            .let {
+                ResponseEntity.created(
+                    URI.create("/feeds/$it")
+                ).build()
+            }
 
     @DeleteMapping
     fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =

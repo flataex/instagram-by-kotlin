@@ -31,9 +31,7 @@ class FileController(
         fileService.saveFile(fileRequest, request)
             .let {
                 ResponseEntity.created(
-                    URI.create(
-                        "/files/$it"
-                    )
+                    URI.create("/files/$it")
                 ).build()
             }
 

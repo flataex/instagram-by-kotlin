@@ -54,6 +54,7 @@ class CommentService(
 
     @Transactional
     fun deleteComment(commentRequest: CommentRequest) =
-        commentRepository.findByIdOrNull(commentRequest.id)?.delete()
+        commentRepository.findByIdOrNull(commentRequest.id)
+            ?.delete()
             ?: throw NoDataException()
 }

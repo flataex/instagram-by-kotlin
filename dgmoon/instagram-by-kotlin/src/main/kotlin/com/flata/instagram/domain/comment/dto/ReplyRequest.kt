@@ -1,7 +1,6 @@
 package com.flata.instagram.domain.comment.dto
 
 import com.flata.instagram.domain.comment.model.Reply
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 data class ReplyRequest(

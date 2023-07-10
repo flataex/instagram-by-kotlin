@@ -4,7 +4,6 @@ import com.flata.instagram.domain.comment.dto.ReplyRequest
 import com.flata.instagram.domain.comment.repository.ReplyRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,7 +16,7 @@ class ReplyService(
         replyRepository.save(replyRequest.toEntity())
 
     @Transactional
-    fun updateReply(replyRequest: ReplyRequest)=
+    fun updateReply(replyRequest: ReplyRequest) =
         replyRepository.findByIdOrNull(replyRequest.id)
             ?.update(replyRequest.content)
             ?: throw NoDataException()
