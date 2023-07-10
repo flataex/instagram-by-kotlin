@@ -1,9 +1,9 @@
 package com.flata.instagram.domain.follow.dto
 
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 data class FollowRequest(
     val id: Long,
-    @field:NotEmpty
+    @field:NotNull
     val toUserId: Long
 )

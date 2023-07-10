@@ -1,13 +1,13 @@
 package com.flata.instagram.domain.comment.dto
 
 import com.flata.instagram.domain.comment.model.Comment
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 data class CommentRequest(
     val id: Long,
-    @field: NotEmpty
+    @field: NotNull
     val userId: Long,
-    @field: NotEmpty
+    @field: NotNull
     val feedId: Long,
     val content: String
 ) {
