@@ -5,6 +5,7 @@ import com.flata.instagram.domain.like.dto.LikeResponse
 import com.flata.instagram.domain.like.model.Like
 import com.flata.instagram.domain.like.repository.LikeRepository
 import com.flata.instagram.global.exception.NoDataException
+import com.flata.instagram.global.exception.RedisException
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -19,13 +20,8 @@ class LikeService(
 ) {
     @Transactional
     fun like(likeRequest: LikeRequest, userId: Long): LikeResponse =
-        runCatching {
-            redisTemplate.opsForZSet()
-                .add(
-                    "likes:".plus(likeRequest.feedId),
-                    userId.toString(),
-                    Timestamp.valueOf(LocalDateTime.now()).time.toDouble()
-                )
+        run {
+            saveLikeOnRedis(likeRequest, userId)
 
             likeRepository.save(
                 Like(
@@ -35,27 +31,39 @@ class LikeService(
                 )
             )
             LikeResponse(true)
+        }
+
+    private fun saveLikeOnRedis(likeRequest: LikeRequest, userId: Long) =
+        runCatching {
+            redisTemplate.opsForZSet()
+                .add(
+                    "likes:${likeRequest.feedId}",
+                    userId.toString(),
+                    Timestamp.valueOf(LocalDateTime.now()).time.toDouble()
+                )
         }.onFailure {
-            throw Exception()
+            throw RedisException()
         }.getOrThrow()
 
     @Transactional
     fun unlike(likeRequest: LikeRequest, userId: Long): LikeResponse =
+        run {
+            deleteLikeOnRedis(likeRequest, userId)
+
+            likeRepository.findByIdOrNull(likeRequest.id)
+                ?.delete()
+                ?: throw NoDataException()
+            LikeResponse(true)
+        }
+
+    private fun deleteLikeOnRedis(likeRequest: LikeRequest, userId: Long) =
         runCatching {
             redisTemplate.opsForZSet()
                 .remove(
-                    "likes:".plus(likeRequest.feedId),
+                    "likes:${likeRequest.feedId}",
                     userId.toString(),
                 )
-
-            val like = likeRepository.findByIdOrNull(likeRequest.id) ?: throw NoDataException()
-
-            like.delete()
-
-            LikeResponse(
-                true
-            )
         }.onFailure {
-            throw Exception()
-        }.getOrThrow()
+            throw RedisException()
+        }
 }

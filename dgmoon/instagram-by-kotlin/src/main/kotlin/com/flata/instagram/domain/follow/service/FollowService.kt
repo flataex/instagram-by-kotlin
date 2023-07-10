@@ -6,9 +6,9 @@ import com.flata.instagram.domain.follow.model.Follow
 import com.flata.instagram.domain.follow.repository.FollowRepository
 import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.NoDataException
+import com.flata.instagram.global.exception.RedisException
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
@@ -23,58 +23,69 @@ class FollowService(
 ) {
     @Transactional
     fun follow(followRequest: FollowRequest, userId: Long): FollowResponse =
-        runCatching {
-            val zSetOperations = redisTemplate.opsForZSet()
-            zSetOperations.operations.multi()
+        run {
+            saveFollowOnRedis(
+                followRequest,
+                userId
+            )
 
-            zSetOperations.add(
-                "following:".plus(userId),
+            followRepository.save(
+                Follow(
+                    0L,
+                    userRepository.findByIdOrNull(userId) ?: throw NoDataException(),
+                    userRepository.findByIdOrNull(followRequest.toUserId) ?: throw NoDataException()
+                )
+            ).let {
+                FollowResponse(true)
+            }
+        }
+
+    private fun saveFollowOnRedis(followRequest: FollowRequest, userId: Long) =
+        runCatching {
+            val zSetOperation = redisTemplate.opsForZSet()
+
+            zSetOperation.add(
+                "following:${userId}",
                 followRequest.toUserId.toString(),
                 Timestamp.valueOf(LocalDateTime.now()).time.toDouble()
             )
 
-            zSetOperations.add(
-                "followers:".plus(followRequest.toUserId),
+            zSetOperation.add(
+                "followers:${followRequest.toUserId}",
                 userId.toString(),
                 Timestamp.valueOf(LocalDateTime.now()).time.toDouble()
             )
-
-                followRepository.save(
-                    Follow(
-                        0L,
-                        userRepository.findByIdOrNull(userId) ?: throw NoDataException(),
-                        userRepository.findByIdOrNull(followRequest.toUserId) ?: throw NoDataException()
-                    )
-                ).let {
-                        FollowResponse(
-                            true
-                        )
-                }
         }.onFailure {
-            throw Exception()
-        }.getOrThrow()
+            throw RedisException()
+        }
 
     @Transactional
     fun unfollow(followRequest: FollowRequest, userId: Long) =
-        runCatching {
-            val zSetOperations = redisTemplate.opsForZSet()
-            zSetOperations.operations.multi()
-
-            zSetOperations.remove(
-                "following:".plus(userId),
-                followRequest.toUserId.toString(),
-            )
-
-            zSetOperations.remove(
-                "followers:".plus(followRequest.toUserId),
-                userId.toString(),
+        run {
+            deleteFollowOnRedis(
+                followRequest,
+                userId
             )
 
             followRepository.findByIdOrNull(followRequest.id)
                 ?.delete()
                 ?: throw NoDataException()
-        }.onFailure {
-            throw Exception()
-        }.getOrThrow()
+        }
 
+    private fun deleteFollowOnRedis(followRequest: FollowRequest, userId: Long) =
+        runCatching {
+            val zSetOperations = redisTemplate.opsForZSet()
+
+            zSetOperations.remove(
+                "following:${userId}",
+                followRequest.toUserId.toString(),
+            )
+
+            zSetOperations.remove(
+                "followers:${followRequest.toUserId}",
+                userId.toString(),
+            )
+        }.onFailure {
+            throw RedisException()
+        }
 }
