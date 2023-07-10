@@ -18,11 +18,13 @@ class ReplyService(
 
     @Transactional
     fun updateReply(replyRequest: ReplyRequest)=
-        replyRepository.findByIdOrNull(replyRequest.id)?.update(replyRequest.content)
+        replyRepository.findByIdOrNull(replyRequest.id)
+            ?.update(replyRequest.content)
             ?: throw NoDataException()
 
     @Transactional
     fun deleteReply(replyRequest: ReplyRequest) =
-        replyRepository.findByIdOrNull(replyRequest.id)?.delete()
+        replyRepository.findByIdOrNull(replyRequest.id)
+            ?.delete()
             ?: throw NoDataException()
 }
