@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class TestService2(
-        private val testRepository: TestRepository,
-        private val testRepository2: TestRepository2
+    private val testRepository: TestRepository,
+    private val testRepository2: TestRepository2
 ) {
     @KafkaListener(topics = ["string"], groupId = "test")
     fun test4(message: String): String {

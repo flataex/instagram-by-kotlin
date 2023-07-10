@@ -6,6 +6,6 @@ import javax.persistence.Id
 @Entity
 class Test {
     @Id
-    var id : Long? = null
+    var id: Long? = null
     var name: String? = null
 }

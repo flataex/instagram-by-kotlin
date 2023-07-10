@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class TestService(
-        private val testRepository: TestRepository,
-        private val testRepository2: TestRepository2,
-        private val kafkaTemplate: KafkaTemplate<String, String>
+    private val testRepository: TestRepository,
+    private val testRepository2: TestRepository2,
+    private val kafkaTemplate: KafkaTemplate<String, String>
 ) {
     fun test(): String {
         var test = Test()
