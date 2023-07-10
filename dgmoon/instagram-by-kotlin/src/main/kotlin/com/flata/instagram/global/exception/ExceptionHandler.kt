@@ -18,4 +18,8 @@ class ExceptionHandler {
     @ExceptionHandler(InvalidLoginInfoException::class)
     fun handleInvalidLoginInfoException(): ResponseEntity<Unit> =
         ResponseEntity(HttpStatus.UNAUTHORIZED)
+
+    @ExceptionHandler(RedisException::class)
+    fun handleRedisException(): ResponseEntity<Unit> =
+        ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
 }
