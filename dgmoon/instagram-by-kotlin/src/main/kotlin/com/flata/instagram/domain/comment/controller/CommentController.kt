@@ -13,6 +13,12 @@ import javax.validation.Valid
 class CommentController(
     private val commentService: CommentService
 ) {
+    @GetMapping
+    fun getComments(): ResponseEntity<List<CommentResponse>> =
+        ResponseEntity.ok(
+            commentService.getComments()
+        )
+
     @GetMapping("/{id}")
     fun getComment(@PathVariable id: Long): ResponseEntity<CommentResponse> =
         ResponseEntity.ok(
@@ -24,7 +30,7 @@ class CommentController(
         commentService.saveComment(commentRequest)
             .let {
                 ResponseEntity.created(
-                    URI.create("/comments$it")
+                    URI.create("/comments/$it")
                 ).build()
             }
 

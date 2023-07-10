@@ -13,6 +13,22 @@ class CommentService(
     private val commentRepository: CommentRepository
 ) {
     @Transactional(readOnly = true)
+    fun getComments(): List<CommentResponse> =
+        commentRepository.findAll()
+            .filter {
+                it.deletedAt == null
+            }
+            .map {
+                CommentResponse(
+                    it.id,
+                    it.feedId,
+                    it.userId,
+                    it.content,
+                    mutableListOf()
+                )
+            }.toList()
+
+    @Transactional(readOnly = true)
     fun getComment(id: Long): CommentResponse =
         commentRepository.findByIdOrNull(id)
             ?.let {
