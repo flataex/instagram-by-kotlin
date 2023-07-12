@@ -17,7 +17,10 @@ class Reply(
     var commentId: Long,
     @Column(columnDefinition = "text", nullable = false)
     @Comment("대댓글")
-    var content: String
+    var content: String,
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    var comment: com.flata.instagram.domain.comment.model.Comment?
 ) : BaseEntity() {
     fun update(content: String) {
         this.content = content

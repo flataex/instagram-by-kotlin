@@ -12,10 +12,12 @@ class TestController(
     fun test(): String {
         return testService.test()
     }
+
     @GetMapping("/test2")
     fun test2(): String {
         return testService.test2()
     }
+
     @GetMapping("/test3")
     fun test3(): String {
         return testService.test3()

@@ -15,30 +15,36 @@ class CommentController(
 ) {
     @GetMapping
     fun getComments(): ResponseEntity<List<CommentResponse>> =
-        ResponseEntity.ok(commentService.getComments())
+        ResponseEntity.ok(
+            commentService.getComments()
+        )
 
     @GetMapping("/{id}")
     fun getComment(@PathVariable id: Long): ResponseEntity<CommentResponse> =
-        ResponseEntity.ok(commentService.getComment(id))
-
+        ResponseEntity.ok(
+            commentService.getComment(id)
+        )
 
     @PostMapping
     fun saveComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> =
-        ResponseEntity.created(
-            commentService.saveComment(commentRequest).let {
-                URI.create("/comments/".plus(it))
+        commentService.saveComment(commentRequest)
+            .let {
+                ResponseEntity.created(
+                    URI.create("/comments/$it")
+                ).build()
             }
-        ).build()
 
     @PutMapping
-    fun updateComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> {
-        commentService.updateComment(commentRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun updateComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> =
+        run {
+            commentService.updateComment(commentRequest)
+            ResponseEntity.noContent().build()
+        }
 
     @DeleteMapping
-    fun deleteComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> {
-        commentService.deleteComment(commentRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun deleteComment(@Valid @RequestBody commentRequest: CommentRequest): ResponseEntity<Unit> =
+        run {
+            commentService.deleteComment(commentRequest)
+            ResponseEntity.noContent().build()
+        }
 }

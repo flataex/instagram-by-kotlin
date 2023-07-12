@@ -14,30 +14,35 @@ class UserController(
     private val userService: UserService
 ) {
     @GetMapping
-    fun getUsers(): ResponseEntity<List<UserResponse>> =
+    fun getUsers() =
         ResponseEntity.ok(userService.getUsers())
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> =
-        ResponseEntity.ok(userService.getUser(id))
+        ResponseEntity.ok(
+            userService.getUser(id)
+        )
 
     @PostMapping
     fun saveUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
-        ResponseEntity.created(
-            userService.saveUser(userRequest).let {
-                URI.create("/users/".plus(it))
+        userService.saveUser(userRequest)
+            .let {
+                ResponseEntity.created(
+                    URI.create("/user/$it")
+                ).build()
             }
-        ).build()
 
     @PutMapping
-    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> {
-        userService.updateUser(userRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun updateUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
+        run {
+            userService.updateUser(userRequest)
+            ResponseEntity.noContent().build()
+        }
 
     @DeleteMapping
-    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> {
-        userService.deleteUser(userRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun deleteUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<Unit> =
+        run {
+            userService.deleteUser(userRequest)
+            ResponseEntity.noContent().build()
+        }
 }

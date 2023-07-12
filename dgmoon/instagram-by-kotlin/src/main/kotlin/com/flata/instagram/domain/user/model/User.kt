@@ -1,5 +1,6 @@
 package com.flata.instagram.domain.user.model
 
+import com.flata.instagram.domain.follow.model.Follow
 import com.flata.instagram.global.model.BaseEntity
 import org.hibernate.annotations.Comment
 import org.springframework.security.crypto.bcrypt.BCrypt
@@ -19,7 +20,10 @@ class User(
     var password: String,
     @Column(length = 16, nullable = false, unique = true)
     @Comment("닉네임")
-    var nickname: String
+    var nickname: String,
+    @OneToMany
+    @JoinColumn(name = "follow_id")
+    var follows: List<Follow>?
 ) : BaseEntity() {
     fun update(email: String, password: String, nickname: String) {
         this.email = email

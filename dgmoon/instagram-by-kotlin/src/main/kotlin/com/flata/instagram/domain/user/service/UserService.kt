@@ -16,33 +16,32 @@ class UserService(
     @Transactional(readOnly = true)
     fun getUsers(): List<UserResponse> =
         userRepository.findAll()
-            .map { users ->
+            .map {
                 UserResponse(
-                    users.id,
-                    users.email,
-                    users.password,
-                    users.nickname
+                    id = it.id,
+                    email = it.email,
+                    password = it.password,
+                    nickname = it.nickname
                 )
             }
 
     @Transactional(readOnly = true)
-    fun getUser(id: Long): UserResponse {
-        val user = userRepository.findByIdOrNull(id) ?: throw NoDataException()
-        return UserResponse(
-            user.id,
-            user.email,
-            user.password,
-            user.nickname
-        )
-    }
-
+    fun getUser(id: Long): UserResponse =
+        userRepository.findByIdOrNull(id)
+            ?.let {
+                UserResponse(
+                    id = it.id,
+                    email = it.email,
+                    password = it.password,
+                    nickname = it.nickname
+                )
+            } ?: throw NoDataException()
 
     @Transactional
     fun saveUser(userRequest: UserRequest): Long =
         run {
             validateEmail(userRequest.email)
             validateNickname(userRequest.nickname)
-
             userRepository.save(userRequest.toEntity()).id
         }
 
@@ -57,16 +56,17 @@ class UserService(
         }
 
     @Transactional
-    fun updateUser(userRequest: UserRequest) {
-        val user = userRepository.findByIdOrNull(userRequest.id) ?: throw NoDataException()
-        user.update(
+    fun updateUser(userRequest: UserRequest) =
+        userRepository.findByIdOrNull(userRequest.id)?.update(
             userRequest.email,
             userRequest.password,
             userRequest.nickname
-        )
-    }
+        ) ?: throw NoDataException()
 
     @Transactional
     fun deleteUser(userRequest: UserRequest) =
-        userRepository.deleteById(userRequest.id)
+        userRepository.findByIdOrNull(userRequest.id)
+            ?.let {
+                userRepository.deleteById(it.id)
+            } ?: throw NoDataException()
 }

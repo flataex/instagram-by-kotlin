@@ -14,21 +14,23 @@ class ReplyController(
 ) {
     @PostMapping
     fun saveReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> =
-        ResponseEntity.created(
-            replyService.saveReply(replyRequest).let {
+        replyService.saveReply(replyRequest).let {
+            ResponseEntity.created(
                 URI.create("/replies/".plus(it))
-            }
-        ).build()
+            ).build()
+        }
 
     @PutMapping
-    fun updateReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> {
-        replyService.updateReply(replyRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun updateReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> =
+        run {
+            replyService.updateReply(replyRequest)
+            ResponseEntity.noContent().build()
+        }
 
     @DeleteMapping
-    fun deleteReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> {
-        replyService.deleteReply(replyRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun deleteReply(@Valid @RequestBody replyRequest: ReplyRequest): ResponseEntity<Unit> =
+        run {
+            replyService.deleteReply(replyRequest)
+            ResponseEntity.noContent().build()
+        }
 }

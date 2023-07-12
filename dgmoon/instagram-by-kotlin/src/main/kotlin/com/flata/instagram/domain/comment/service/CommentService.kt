@@ -6,46 +6,55 @@ import com.flata.instagram.domain.comment.repository.CommentRepository
 import com.flata.instagram.global.exception.NoDataException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CommentService(
     private val commentRepository: CommentRepository
 ) {
+    @Transactional(readOnly = true)
     fun getComments(): List<CommentResponse> =
         commentRepository.findAll()
+            .filter {
+                it.deletedAt == null
+            }
             .map {
                 CommentResponse(
                     it.id,
                     it.feedId,
                     it.userId,
                     it.content,
-                    it.replies ?: mutableListOf()
+                    mutableListOf()
+                )
+            }.toList()
+
+    @Transactional(readOnly = true)
+    fun getComment(id: Long): CommentResponse =
+        commentRepository.findByIdOrNull(id)
+            ?.let {
+                CommentResponse(
+                    id = it.id,
+                    feedId = it.feedId,
+                    userId = it.userId,
+                    content = it.content,
+                    replies = it.replies ?: mutableListOf()
                 )
             }
+            ?: throw NoDataException()
 
-    fun getComment(id: Long): CommentResponse {
-        val comment = commentRepository.findByIdOrNull(id) ?: throw NoDataException()
+    @Transactional
+    fun saveComment(commentRequest: CommentRequest): Long =
+        commentRepository.save(commentRequest.toEntity()).id
 
-        return CommentResponse(
-            id = comment.id,
-            feedId = comment.feedId,
-            userId = comment.userId,
-            content = comment.content,
-            replies = comment.replies ?: mutableListOf()
-        )
-    }
+    @Transactional
+    fun updateComment(commentRequest: CommentRequest) =
+        commentRepository.findByIdOrNull(commentRequest.id)
+            ?.update(commentRequest.content)
+            ?: throw NoDataException()
 
-    fun saveComment(commentRequest: CommentRequest) =
-        commentRepository.save(commentRequest.toEntity())
-
-    fun updateComment(commentRequest: CommentRequest) {
-        val comment = commentRepository.findByIdOrNull(commentRequest.id) ?: throw NoDataException()
-
-        return comment.update(commentRequest.content)
-    }
-
-    fun deleteComment(commentRequest: CommentRequest) {
-        val comment = commentRepository.findByIdOrNull(commentRequest.id) ?: throw NoDataException()
-        comment.delete()
-    }
+    @Transactional
+    fun deleteComment(commentRequest: CommentRequest) =
+        commentRepository.findByIdOrNull(commentRequest.id)
+            ?.delete()
+            ?: throw NoDataException()
 }

@@ -3,13 +3,13 @@ package com.flata.instagram.domain.feed.controller
 import com.flata.instagram.domain.feed.dto.FeedRequest
 import com.flata.instagram.domain.feed.dto.FeedResponse
 import com.flata.instagram.domain.feed.service.FeedService
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 @RestController
@@ -21,29 +21,34 @@ class FeedController(
     fun getFeeds(
         @PageableDefault(
             size = 10,
-            page = 1,
+            page = 0,
             sort = ["id"],
             direction = Sort.Direction.DESC
         ) pageable: Pageable
     ): ResponseEntity<List<FeedResponse>> =
-        ResponseEntity.ok(feedService.getFeeds())
+        ResponseEntity.ok(
+            feedService.getFeeds(pageable)
+        )
 
     @GetMapping("/{id}")
     fun getFeed(@PathVariable id: Long): ResponseEntity<FeedResponse> =
-        ResponseEntity.ok(feedService.getFeed(id))
+        ResponseEntity.ok(
+            feedService.getFeed(id)
+        )
 
     @PostMapping
-    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
-        ResponseEntity.created(
-            feedService.saveFeed(feedRequest).let {
-                URI.create("/feeds/".plus(it))
+    fun saveFeed(@Valid @RequestBody feedRequest: FeedRequest, session: HttpSession): ResponseEntity<Unit> =
+        feedService.saveFeed(feedRequest, session.getAttribute("userId") as Long)
+            .let {
+                ResponseEntity.created(
+                    URI.create("/feeds/$it")
+                ).build()
             }
-        ).build()
-
 
     @DeleteMapping
-    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> {
-        feedService.deleteFeed(feedRequest)
-        return ResponseEntity.noContent().build()
-    }
+    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest): ResponseEntity<Unit> =
+        run {
+            feedService.deleteFeed(feedRequest)
+            ResponseEntity.noContent().build()
+        }
 }

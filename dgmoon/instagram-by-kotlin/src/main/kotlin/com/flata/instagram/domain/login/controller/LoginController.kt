@@ -14,7 +14,7 @@ class LoginController(
     private val loginService: LoginService,
 ) {
     @PostMapping("/login")
-    fun login(@Valid @RequestBody loginRequest: LoginRequest, session: HttpSession): ResponseEntity<Long?> =
+    fun login(@Valid @RequestBody loginRequest: LoginRequest, session: HttpSession): ResponseEntity<Long> =
         ResponseEntity.ok(loginService.login(loginRequest, session))
 
     @PostMapping("/logout")

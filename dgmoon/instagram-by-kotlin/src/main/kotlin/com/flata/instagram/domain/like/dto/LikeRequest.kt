@@ -1,9 +1,9 @@
 package com.flata.instagram.domain.like.dto
 
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 data class LikeRequest(
     val id: Long,
-    @field:NotEmpty
+    @field:NotNull
     val feedId: Long
 )

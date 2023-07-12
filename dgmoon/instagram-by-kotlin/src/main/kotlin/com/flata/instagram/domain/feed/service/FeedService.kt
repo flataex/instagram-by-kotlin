@@ -4,10 +4,13 @@ import com.flata.instagram.domain.feed.dto.FeedRequest
 import com.flata.instagram.domain.feed.dto.FeedResponse
 import com.flata.instagram.domain.feed.repository.FeedRepository
 import com.flata.instagram.global.exception.NoDataException
+import org.springframework.data.domain.Pageable
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestBody
+import javax.validation.Valid
 
 @Service
 class FeedService(
@@ -15,43 +18,52 @@ class FeedService(
     private val redisTemplate: RedisTemplate<String, String>
 ) {
     @Transactional(readOnly = true)
-    fun getFeeds(): List<FeedResponse> =
-        feedRepository.findAll()
-            .map { feed ->
-                FeedResponse(
-                    feed.id,
-                    feed.userId,
-                    feed.content,
-                    feed.comments ?: mutableListOf(),
-                    feed.likes?.size?.toLong() ?: 0
-                )
+    fun getFeeds(pageable: Pageable): List<FeedResponse> =
+        feedRepository.findAll(pageable)
+            .filter {
+                it.deletedAt == null
             }
+            .map { it ->
+                FeedResponse(
+                    it.id,
+                    it.userId,
+                    it.content,
+                    it.comments ?: mutableListOf(),
+                    it.likes?.size?.toLong() ?: 0
+                )
+            }.toList()
 
     @Transactional(readOnly = true)
-    fun getFeed(id: Long): FeedResponse {
-        val feed = feedRepository.findByIdOrNull(id) ?: throw NoDataException()
-        return FeedResponse(
-            feed.id,
-            feed.userId,
-            feed.content,
-            feed.comments ?: mutableListOf(),
-            //feed.like?.size?.toLong() ?: 0
-            getNumberOfLikes(feed.id)
-        )
-    }
+    fun getFeed(id: Long): FeedResponse =
+        feedRepository.findByIdOrNull(id)
+            ?.let {
+                FeedResponse(
+                    it.id,
+                    it.userId,
+                    it.content,
+                    it.comments ?: mutableListOf(),
+                    getNumberOfLikes(it.id)
+                )
+            }
+            ?: throw NoDataException()
 
-    private fun getNumberOfLikes(feedId: Long): Long {
-        val zSetOperations = redisTemplate.opsForZSet()
-        return zSetOperations.zCard("likes:".plus(feedId)) ?: 0
-    }
+    private fun getNumberOfLikes(feedId: Long): Long =
+        redisTemplate.opsForZSet()
+            .zCard(
+                "likes:".plus(feedId)
+            )
+            ?: 0
 
     @Transactional
-    fun saveFeed(feedRequest: FeedRequest): Long =
-        feedRepository.save(feedRequest.toEntity()).id
+    fun saveFeed(
+        @Valid @RequestBody feedRequest: FeedRequest,
+        userId: Long
+    ): Long =
+        feedRepository.save(feedRequest.toEntityWith(userId)).id
 
     @Transactional
-    fun deleteFeed(feedRequest: FeedRequest) {
-        val feed = feedRepository.findByIdOrNull(feedRequest.id) ?: throw NoDataException()
-        feed.delete()
-    }
+    fun deleteFeed(@Valid @RequestBody feedRequest: FeedRequest) =
+        feedRepository.findByIdOrNull(feedRequest.id)
+            ?.delete()
+            ?: throw NoDataException()
 }
