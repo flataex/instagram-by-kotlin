@@ -10,6 +10,7 @@ import com.flata.instagram.domain.user.repository.UserRepository
 import com.flata.instagram.global.exception.user.UserNotFoundException
 import com.flata.instagram.global.exception.user.WrongEmailException
 import com.flata.instagram.global.exception.user.WrongPasswordException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,10 +31,10 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun signIn(request: SignInRequest): SignInResponse =
-        getUserBy(request.email)?.let { takeIfValidSignIn(request, it) }
+        findBy(request.email)?.let { takeIfValidSignIn(request, it) }
             ?: throw WrongEmailException()
 
-    private fun getUserBy(email: String): User? =
+    private fun findBy(email: String): User? =
         userRepository.findByEmail(email)
 
     private fun takeIfValidSignIn(request: SignInRequest, user: User): SignInResponse =
@@ -49,6 +50,6 @@ class UserService(
         userRepository.existsByNickname(nickname)
 
     @Transactional(readOnly = true)
-    fun getUserBy(userId: Long): User =
-        userRepository.findById(userId).orElseThrow { UserNotFoundException() }
+    fun findBy(userId: Long): User =
+        userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException()
 }

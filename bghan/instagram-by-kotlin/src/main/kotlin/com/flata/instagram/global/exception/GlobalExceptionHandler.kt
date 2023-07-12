@@ -15,12 +15,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.sql.SQLIntegrityConstraintViolationException
 import javax.validation.ConstraintViolationException
+import javax.validation.ValidationException
 
 @RestControllerAdvice
 class GlobalExceptionHandler(
     val exceptionConverter: ExceptionConverter
 ) {
     val log: Logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+
+    @ExceptionHandler(ValidationException::class)
+    fun validationException(exception: ValidationException): ResponseEntity<ErrorResponse> {
+        log.error(exceptionConverter.convertStackTraceAsStringFrom(exception))
+        return exception.toResponseEntity()
+    }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException::class)
     fun sqlIntegrityConstraintViolationException(exception: SQLIntegrityConstraintViolationException): ResponseEntity<ErrorResponse> {

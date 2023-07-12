@@ -16,6 +16,15 @@ enum class ExceptionType(
     FEED_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시글을 조회할 수 없습니다."),
     NOT_FEED_OWNER_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시글을 작성한 사용자가 아니라 삭제할 수 없습니다."),
 
+    // 팔로우
+    FOLLOW_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "현재 팔로우 되어 있는 상태가 아닙니다."),
+
+    // 좋아요
+    LIKE_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "현재 좋아요 되어 있는 상태가 아닙니다."),
+
+    // 댓글
+    COMMENT_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 댓글을 찾을 수 없습니다."),
+
     // Client
     BAD_REQUEST_BODY(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
     ILLEGAL_HTTP_METHOD(HttpStatus.BAD_REQUEST, "허용되지 않은 HTTP Method입니다."),
